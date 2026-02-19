@@ -24,30 +24,48 @@ interface JWTToken {
   sub?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AppleClientSecret = any;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface AppleClientSecret {
+  teamId: string;
+  keyId: string;
+  key: string;
+}
+
+// Validar requeridos env vars en build time
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getRequiredEnv(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+  return value;
+}
+
+function getOptionalEnv(key: string): string | undefined {
+  return process.env[key];
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: getOptionalEnv('GOOGLE_CLIENT_ID') || '',
+      clientSecret: getOptionalEnv('GOOGLE_CLIENT_SECRET') || '',
       allowDangerousEmailAccountLinking: true,
     }),
     AzureADProvider({
-      clientId: process.env.MICROSOFT_CLIENT_ID || '',
-      clientSecret: process.env.MICROSOFT_CLIENT_SECRET || '',
+      clientId: getOptionalEnv('MICROSOFT_CLIENT_ID') || '',
+      clientSecret: getOptionalEnv('MICROSOFT_CLIENT_SECRET') || '',
       tenantId: 'common',
       allowDangerousEmailAccountLinking: true,
     }),
     AppleProvider({
-      clientId: process.env.APPLE_ID || '',
+      clientId: getOptionalEnv('APPLE_ID') || '',
       clientSecret: {
-        teamId: process.env.APPLE_TEAM_ID || '',
-        keyId: process.env.APPLE_KEY_ID || '',
-        key: process.env.APPLE_PRIVATE_KEY || '',
-      } as AppleClientSecret,
+        teamId: getOptionalEnv('APPLE_TEAM_ID') || '',
+        keyId: getOptionalEnv('APPLE_KEY_ID') || '',
+        key: getOptionalEnv('APPLE_PRIVATE_KEY') || '',
+      } as unknown as string,
       allowDangerousEmailAccountLinking: true,
     }),
   ],

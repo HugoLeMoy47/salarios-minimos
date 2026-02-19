@@ -4,7 +4,7 @@ Referencia completa de todos los endpoints disponibles en **Días de Salario**.
 
 ## 📋 Tabla de Contenidos
 
-- [Autenticación](#autenticaci%C3%B3n)
+- [Autenticación](#autenticación)
 - [Items](#items)
 - [Shadow Profile](#shadow-profile)
 - [Eventos](#eventos)

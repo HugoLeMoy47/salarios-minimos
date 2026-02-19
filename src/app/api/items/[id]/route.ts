@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { IdSchema, UpdateItemSchema, parseAndValidate } from '@/lib/validation';
 
 /**
  * GET /api/items/:id - Obtener un item específico
@@ -14,6 +15,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+
+    // Validar ID
+    const idResult = parseAndValidate(IdSchema, id);
+    if (!idResult.success) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
+
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
@@ -28,7 +36,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
     }
 
     const item = await prisma.item.findUnique({
-      where: { id: id },
+      where: { id: idResult.data },
     });
 
     if (!item) {
@@ -39,7 +47,10 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
 
-    return NextResponse.json(item);
+    // Cache por 60 segundos
+    const response = NextResponse.json(item);
+    response.headers.set('Cache-Control', 'private, max-age=60');
+    return response;
   } catch (error) {
     console.error('Error al obtener item:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
@@ -52,6 +63,13 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
 export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+
+    // Validar ID
+    const idResult = parseAndValidate(IdSchema, id);
+    if (!idResult.success) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
+
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
@@ -66,7 +84,7 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
     }
 
     const existingItem = await prisma.item.findUnique({
-      where: { id: id },
+      where: { id: idResult.data },
     });
 
     if (!existingItem) {
@@ -78,14 +96,24 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
     }
 
     const body = await request.json();
+
+    // Validar entrada
+    const dataResult = parseAndValidate(UpdateItemSchema, body);
+    if (!dataResult.success) {
+      return NextResponse.json(
+        {
+          error: 'Validación fallida',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          details: (dataResult as { success: false; error: any }).error.flatten().fieldErrors,
+        },
+        { status: 400 }
+      );
+    }
+
     const updatedItem = await prisma.item.update({
-      where: { id: id },
+      where: { id: idResult.data },
       data: {
-        price: body.price !== undefined ? parseFloat(body.price) : undefined,
-        description: body.description,
-        notes: body.notes,
-        photoUrl: body.photoUrl,
-        status: body.status,
+        ...dataResult.data,
         postponedUntil: body.postponedUntil ? new Date(body.postponedUntil) : undefined,
       },
     });
@@ -103,6 +131,13 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
 export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+
+    // Validar ID
+    const idResult = parseAndValidate(IdSchema, id);
+    if (!idResult.success) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
+
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
@@ -117,7 +152,7 @@ export async function DELETE(request: NextRequest, context: { params: Promise<{ 
     }
 
     const existingItem = await prisma.item.findUnique({
-      where: { id: id },
+      where: { id: idResult.data },
     });
 
     if (!existingItem) {
@@ -129,7 +164,7 @@ export async function DELETE(request: NextRequest, context: { params: Promise<{ 
     }
 
     await prisma.item.delete({
-      where: { id: id },
+      where: { id: idResult.data },
     });
 
     return NextResponse.json({ message: 'Item eliminado exitosamente' });

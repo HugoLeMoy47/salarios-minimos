@@ -1,44 +1,56 @@
 /**
  * Cliente de Prisma para acceso a la bases de datos
- * Nota: Inicialización en runtime según sea necesario
+ * Nota: Inicialización lazy-loaded mediante Proxy
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let cachedPrisma: any = null;
+import type { PrismaClient } from '@prisma/client';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getPrismaClient(): any {
-  if (!cachedPrisma && typeof window === 'undefined') {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { PrismaClient } = require('@prisma/client');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const globalAny = global as any;
-      if (!globalAny.__prisma_client__) {
-        globalAny.__prisma_client__ = new PrismaClient();
-      }
-      cachedPrisma = globalAny.__prisma_client__;
-    } catch {
-      // Prisma not available - will fail at runtime if accessed
-    }
+let cachedPrisma: PrismaClient | null = null;
+
+export function getPrismaClient(): PrismaClient {
+  if (cachedPrisma) {
+    return cachedPrisma;
   }
-  return cachedPrisma;
+
+  if (typeof window !== 'undefined') {
+    throw new Error('Prisma client cannot be initialized in the browser');
+  }
+
+  try {
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL environment variable is required');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaClient } = require('@prisma/client');
+
+    const globalForPrisma = global as unknown as { prisma?: PrismaClient };
+
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = new PrismaClient({
+        errorFormat: 'pretty',
+      });
+    }
+
+    cachedPrisma = globalForPrisma.prisma;
+
+    return cachedPrisma;
+  } catch (error) {
+    console.error('Unable to instantiate Prisma Client. Make sure DATABASE_URL is set.', error);
+    throw error;
+  }
 }
 
-// Export a proxy object that will initialize Prisma on first access
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const prisma = new Proxy({} as Record<string, any>, {
-  get: (target, prop) => {
+// Lazy-loaded Prisma client via Proxy
+const prismaHandler: ProxyHandler<Record<string, unknown>> = {
+  get: (_target, prop) => {
     const client = getPrismaClient();
-    if (!client) {
-      throw new Error(
-        'Prisma not initialized. Make sure DATABASE_URL is set and Prisma is properly configured.'
-      );
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (client as any)[prop];
+    // Access via string key since `prop` may be symbol or string
+    return (client as unknown as Record<string, unknown>)[String(prop)];
   },
-});
+};
+
+const prisma = new Proxy({} as unknown as PrismaClient, prismaHandler);
 
 export { prisma };
 export default prisma;

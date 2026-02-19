@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { CreateItemSchema, UpdateItemSchema, parseAndValidate } from '@/lib/validation';
 
 /**
  * GET /api/items - Obtener todos los items del usuario autenticado
@@ -31,7 +32,10 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json(items);
+    // Cache por 60 segundos
+    const response = NextResponse.json(items);
+    response.headers.set('Cache-Control', 'private, max-age=60');
+    return response;
   } catch (error) {
     console.error('Error al obtener items:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
@@ -49,11 +53,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { price, description, notes, photoUrl, latitude, longitude, geohash } = body;
 
-    if (!price || !description) {
-      return NextResponse.json({ error: 'Precio y descripción son requeridos' }, { status: 400 });
+    // Validar entrada con Zod
+    const result = parseAndValidate(CreateItemSchema, body);
+
+    if (!result.success) {
+      return NextResponse.json(
+        {
+          error: 'Validación fallida',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          details: (result as { success: false; error: any }).error.flatten().fieldErrors,
+        },
+        { status: 400 }
+      );
     }
+
+    const { price, description, notes, photoUrl, latitude, longitude, geohash } = result.data;
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
@@ -66,12 +81,12 @@ export async function POST(request: NextRequest) {
     const item = await prisma.item.create({
       data: {
         userId: user.id,
-        price: parseFloat(price),
+        price,
         description,
         notes,
         photoUrl,
-        latitude: latitude ? parseFloat(latitude) : undefined,
-        longitude: longitude ? parseFloat(longitude) : undefined,
+        latitude,
+        longitude,
         geohash,
         status: 'pending',
       },
@@ -102,6 +117,21 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
+
+    // Validar entrada con Zod
+    const result = parseAndValidate(UpdateItemSchema, body);
+
+    if (!result.success) {
+      return NextResponse.json(
+        {
+          error: 'Validación fallida',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          details: (result as { success: false; error: any }).error.flatten().fieldErrors,
+        },
+        { status: 400 }
+      );
+    }
+
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
@@ -121,7 +151,7 @@ export async function PUT(request: NextRequest) {
 
     const updatedItem = await prisma.item.update({
       where: { id: itemId },
-      data: body,
+      data: result.data,
     });
 
     return NextResponse.json(updatedItem);
