@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Usuario autenticado
+model User {
+  id                    String                 @id @default(cuid())
+  email                 String                 @unique
+  name                  String?
+  image                 String?
+  provider              String                 // google, microsoft, apple
+  providerId            String
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  consentGiven          Boolean                @default(false)
+  consentTimestamp      DateTime?
+  
+  // Relaciones
+  items                 Item[]
+  shadowProfile         ShadowProfile?
+  backups               Backup[]
+  deletionRequests      DeletionRequest[]
+  
+  @@unique([provider, providerId])
+}
+
+// Shadow profile - perfil local sin autenticar
+model ShadowProfile {
+  id                    String                 @id @default(cuid())
+  uuid                  String                 @unique
+  mergedWithUserId      String?                @unique
+  mergedAt              DateTime?
+  localDataJSON         String                 // JSON encoded items data
+  
+  // Si está fusionado con usuario
+  user                  User?                  @relation(fields: [mergedWithUserId], references: [id], onDelete: SetNull)
+  
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+}
+
+// Item / Artículo que el usuario quiere comprar
+model Item {
+  id                    String                 @id @default(cuid())
+  userId                String?
+  price                 Float                  // Precio en MXN
+  description           String                 // Descripción corta del item
+  notes                 String?                // Notas opcionales
+  photoUrl              String?                // URL de la foto (opcional)
+  latitude              Float?
+  longitude             Float?
+  geohash               String?                // Geohash de baja resolución
+  
+  // Estados
+  status                String                 @default("pending") // pending, purchased, not_purchased
+  postponedUntil        DateTime?              // Si está pospuesto
+  notificationSent      Boolean                @default(false)
+  
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  
+  // Relaciones
+  user                  User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([status])
+}
+
+// Backup de datos del usuario
+model Backup {
+  id                    String                 @id @default(cuid())
+  userId                String
+  encryptedData         String                 // Datos cifrados
+  googleDriveFileId     String?                // ID del archivo en Google Drive
+  
+  createdAt             DateTime               @default(now())
+  
+  // Relaciones
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+// Eventos anonimizados para insights
+model AnonymizedEvent {
+  id                    String                 @id @default(cuid())
+  eventType             String                 // item_created, item_purchased, item_postoned, etc.
+  salaryDaysBucket      String?                // 0-0.9, 1-2.9, 3-6.9, 7+
+  geohash6              String?                // Geohash de 6 caracteres
+  timestamp15min        DateTime               // Timestamp truncado a 15 min
+  
+  createdAt             DateTime               @default(now())
+}
+
+// Registro de consentimientos
+model ConsentLog {
+  id                    String                 @id @default(cuid())
+  userId                String?
+  type                  String                 // notifications, geolocation, analytics
+  consent               Boolean
+  timestamp             DateTime
+  
+  createdAt             DateTime               @default(now())
+}
+
+// Solicitud de eliminación de datos (GDPR/LPDP)
+model DeletionRequest {
+  id                    String                 @id @default(cuid())
+  userId                String
+  status                String                 @default("pending") // pending, processing, completed
+  requestedAt           DateTime               @default(now())
+  completedAt           DateTime?
+  
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
