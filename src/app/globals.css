@@ -2,7 +2,11 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --muted: #6b7280;
+  --input-border: #374151;
+  --input-bg: #ffffff;
+  --focus-outline: #2563eb;
 }
 
 @theme inline {
@@ -15,7 +19,11 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #e6e6e6;
+    --muted: #9ca3af;
+    --input-border: #4b5563;
+    --input-bg: #0f1724;
+    --focus-outline: #60a5fa;
   }
 }
 
@@ -24,3 +32,31 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* High-contrast form elements and focus states */
+input,
+textarea,
+select {
+  background: var(--input-bg);
+  color: var(--foreground);
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  border-color: var(--focus-outline);
+}
+
+label {
+  color: var(--foreground);
+}
+
+/* Keep legacy utility colors readable */
+.text-gray-500 { color: var(--muted); }
+.text-gray-700 { color: var(--foreground); }
+.bg-white { background-color: var(--input-bg); }

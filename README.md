@@ -17,9 +17,6 @@ Una aplicación web moderna que te ayuda a visualizar el costo real de las cosas
 
 ### Requisitos previos
 
-- Node.js 18+ o 20+
-- npm 9+ (o pnpm)
-- Git
 
 ### Instalación local
 
@@ -41,6 +38,18 @@ npx prisma generate
 # Iniciar servidor de desarrollo
 npm run dev
 ```
+
+## UI: Material Design and Dark Mode
+
+This update integrates Material UI for improved visual consistency and adds a user-toggleable dark mode.
+
+After pulling changes, install new dependencies:
+
+```bash
+npm install
+```
+
+The app is wrapped with a theme provider. The current theme preference is stored in `localStorage` under `theme-mode`.
 
 La aplicación estará disponible en `http://localhost:3000`
 

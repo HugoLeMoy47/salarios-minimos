@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import {
   calculateSalaryDays,
   getSalaryDaysExplanation,
@@ -129,80 +133,76 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4">¿Qué quieres comprar?</h2>
+    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
+      <Typography variant="h5" component="h2" gutterBottom>
+        ¿Qué quieres comprar?
+      </Typography>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Descripción del artículo *
-        </label>
-        <input
-          type="text"
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <TextField
+          label="Descripción del artículo *"
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           placeholder="Ej: Laptop, zapatillas, viaje a playa..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
           required
+          fullWidth
+          variant="outlined"
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Precio (MXN) *</label>
-        <input
+        <TextField
+          label="Precio (MXN) *"
           type="number"
-          step="0.01"
+          inputProps={{ step: '0.01' }}
           value={formData.price}
           onChange={handlePriceChange}
           placeholder="0.00"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
           required
+          fullWidth
+          variant="outlined"
         />
-      </div>
 
-      {salaryDays !== null && (
-        <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <p className="text-sm font-semibold text-blue-900">
-            {getSalaryDaysExplanation(parseFloat(formData.price))}
-          </p>
-          <p className="text-xs text-blue-700 mt-1">
-            Basado en salario mínimo: ${minimumSalary}/día
-          </p>
-        </div>
-      )}
+        {salaryDays !== null && (
+          <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+              {getSalaryDaysExplanation(parseFloat(formData.price))}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Basado en salario mínimo: ${minimumSalary}/día
+            </Typography>
+          </Box>
+        )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notas (opcional)</label>
-        <textarea
+        <TextField
+          label="Notas (opcional)"
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           placeholder="Ej: Necesito guardar para octubre..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          fullWidth
+          multiline
           rows={3}
+          variant="outlined"
         />
-      </div>
 
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md disabled:bg-gray-400"
-        >
-          {isLoading ? 'Creando...' : 'Crear artículo'}
-        </button>
-        <button
-          type="button"
-          onClick={handleRequestLocation}
-          disabled={requestingLocation || isLoading}
-          className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md disabled:bg-gray-400"
-          title="Compartir ubicación (opcional)"
-        >
-          📍
-        </button>
-      </div>
+        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+          <Button type="submit" variant="contained" color="primary" fullWidth disabled={isLoading}>
+            {isLoading ? 'Creando...' : 'Crear artículo'}
+          </Button>
+          <Button
+            type="button"
+            onClick={handleRequestLocation}
+            variant="contained"
+            color="success"
+            disabled={requestingLocation || isLoading}
+            title="Compartir ubicación (opcional)"
+          >
+            📍
+          </Button>
+        </Box>
 
-      <p className="text-xs text-gray-500">
-        * Campos requeridos. Tu ubicación es opcional y será anonimizada.
-      </p>
-    </form>
+        <Typography variant="caption" color="text.secondary">
+          * Campos requeridos. Tu ubicación es opcional y será anonimizada.
+        </Typography>
+      </Box>
+    </Box>
   );
 }

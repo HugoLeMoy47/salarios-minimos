@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,7 +27,20 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+            <div>
+              <h1 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700 }}>Días de Salario</h1>
+            </div>
+            <div>
+              <ThemeToggle />
+            </div>
+          </div>
+
+          <main>
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
