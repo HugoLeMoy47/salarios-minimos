@@ -133,7 +133,7 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, maxWidth: 760, mx: 'auto' }}>
       <Typography variant="h5" component="h2" gutterBottom>
         ¿Qué quieres comprar?
       </Typography>
@@ -162,7 +162,15 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
         />
 
         {salaryDays !== null && (
-          <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: 'background.paper',
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
               {getSalaryDaysExplanation(parseFloat(formData.price))}
             </Typography>
@@ -183,17 +191,24 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
           variant="outlined"
         />
 
-        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={isLoading}>
+        <Box sx={{ display: 'flex', gap: 1, mt: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ flex: 1 }}
+            disabled={isLoading}
+          >
             {isLoading ? 'Creando...' : 'Crear artículo'}
           </Button>
           <Button
             type="button"
             onClick={handleRequestLocation}
-            variant="contained"
-            color="success"
+            variant="outlined"
+            color="primary"
             disabled={requestingLocation || isLoading}
             title="Compartir ubicación (opcional)"
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             📍
           </Button>

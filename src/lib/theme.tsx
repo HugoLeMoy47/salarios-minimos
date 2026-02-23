@@ -1,9 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { ThemeProvider as MuiThemeProvider, createTheme, PaletteMode } from '@mui/material/styles';
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+  PaletteMode,
+} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 type ThemeContextType = {
   mode: PaletteMode;
@@ -19,19 +23,18 @@ export function useThemeMode() {
 }
 
 export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = useState<PaletteMode>('light');
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('theme-mode');
-      if (stored === 'light' || stored === 'dark') {
-        setMode(stored);
-        return;
-      }
-    } catch {}
-    setMode(prefersDark ? 'dark' : 'light');
-  }, [prefersDark]);
+  // initialize from localStorage once; default to light
+  const [mode, setMode] = useState<PaletteMode>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('theme-mode');
+        if (stored === 'light' || stored === 'dark') {
+          return stored;
+        }
+      } catch {}
+    }
+    return 'light';
+  });
 
   useEffect(() => {
     try {
@@ -41,25 +44,50 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleMode = () => setMode((m) => (m === 'light' ? 'dark' : 'light'));
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-          primary: { main: '#1976d2' },
-          background: {
-            default: mode === 'light' ? '#ffffff' : '#0a0a0a',
-            paper: mode === 'light' ? '#ffffff' : '#121212',
+  const theme = useMemo(() => {
+    const base = createTheme({
+      palette: {
+        mode,
+        primary: { main: '#0078d4', contrastText: '#ffffff' },
+        secondary: { main: '#2b88d8' },
+        background: {
+          default: mode === 'light' ? '#f3f2f1' : '#121214',
+          paper: mode === 'light' ? '#ffffff' : '#1b1b1d',
+        },
+        text: {
+          primary: mode === 'light' ? '#323130' : '#f3f2f1',
+          secondary: mode === 'light' ? '#605e5c' : '#c8c6c4',
+        },
+      },
+      shape: { borderRadius: 8 },
+      components: {
+        MuiButton: {
+          defaultProps: { disableElevation: true },
+          styleOverrides: {
+            root: {
+              borderRadius: 8,
+            },
           },
         },
-        typography: {
-          button: {
-            textTransform: 'none',
+        MuiPaper: {
+          styleOverrides: {
+            root: { backgroundImage: 'none' },
           },
         },
-      }),
-    [mode]
-  );
+        MuiTextField: {
+          defaultProps: { variant: 'outlined' },
+        },
+      },
+      typography: {
+        button: { textTransform: 'none' },
+        fontFamily: 'var(--font-geist-sans), Arial, Helvetica, sans-serif',
+        h1: { fontWeight: 700 },
+      },
+      spacing: 8,
+    });
+
+    return responsiveFontSizes(base);
+  }, [mode]);
 
   return (
     <ThemeModeContext.Provider value={{ mode, toggleMode }}>

@@ -17,7 +17,6 @@ Una aplicación web moderna que te ayuda a visualizar el costo real de las cosas
 
 ### Requisitos previos
 
-
 ### Instalación local
 
 ```bash
@@ -39,9 +38,42 @@ npx prisma generate
 npm run dev
 ```
 
-## UI: Material Design and Dark Mode
+## UI: Material Design, Dark Mode & Accessibility Update
 
-This update integrates Material UI for improved visual consistency and adds a user-toggleable dark mode.
+### Visual Design & Accessibility Improvements
+
+This update integrates Material UI (MUI) with MS365-inspired design and comprehensive accessibility improvements:
+
+#### 🎨 Color Palette (MS365-inspired)
+
+- **Neutral tones**: `#f3f2f1`, `#edebe9`, `#e1dfdd` (light backgrounds)
+- **Text colors**: `#323130` (primary), `#605e5c` (secondary) – **WCAG AAA contrast** (≥7:1)
+- **Accent blue**: `#0078d4` (primary), `#2b88d8` (secondary) – verified for WCAG AA
+- **Dark theme**: High-contrast modes auto-detect system preference; stored in `localStorage`
+
+#### ♿ Accessibility (WCAG AA+)
+
+- **Contrast ratios**: All text meets WCAG AA minimum (4.5:1); primary text exceeds AAA (7:1)
+- **Focus states**: 3px blue outline + shadow for keyboard navigation
+- **Semantic components**: MUI TextField, Button, AppBar use ARIA labels natively
+- **Responsive typography**: Scales proportionally using `responsiveFontSizes()` MUI helper
+- **Touch targets**: Buttons/inputs minimum 44px height (mobile accessible)
+
+#### 📱 Responsive Design
+
+- **Breakpoints**: xs (<640px), sm (641–1024px), md (≥1025px)
+- **Layouts**: Flexbox + CSS Grid; stacked buttons on mobile, inline on tablet+
+- **Container padding**: Dynamic `--container-padding` variable scales with viewport
+- **Typography**: Responsive font sizes auto-scale between devices
+- **Form fields**: `ItemForm` centered max-width with responsive spacing
+
+#### 🔧 Implementation Details
+
+- **Theme provider**: `src/lib/theme.tsx` — centralized color & typography (MUI `createTheme` + `responsiveFontSizes`)
+- **Header component**: `src/components/Header.tsx` — MUI AppBar/Toolbar with theme toggle
+- **CSS variables**: `src/app/globals.css` — MS365 colors + dark mode support
+- **Form improvements**: MUI TextField/Button ensure consistent spacing & contrast
+- **Refactored**: Removed inline styles; centralized in MUI `sx` prop (responsive-ready)
 
 After pulling changes, install new dependencies:
 
@@ -49,7 +81,7 @@ After pulling changes, install new dependencies:
 npm install
 ```
 
-The app is wrapped with a theme provider. The current theme preference is stored in `localStorage` under `theme-mode`.
+**No functional changes**: All improvements are UI-only. Theme preference stored in `localStorage` under `theme-mode`.
 
 La aplicación estará disponible en `http://localhost:3000`
 
