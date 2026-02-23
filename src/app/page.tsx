@@ -2,6 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import {
+  Container,
+  Box,
+  Button,
+  Tabs,
+  Tab,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Alert,
+} from '@mui/material';
 import { ItemForm } from '@/components/ItemForm';
 import { LocalItem, getAllShadowItems } from '@/lib/shadow-profile';
 
@@ -48,169 +60,263 @@ export default function Home() {
   };
 
   const filteredItems = getFilteredItems();
+  const pendingCount = items.filter((i) => i.status === 'pending').length;
+  const purchasedCount = items.filter((i) => i.status === 'purchased').length;
+  const notPurchasedCount = items.filter((i) => i.status === 'not_purchased').length;
+
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+    const tabs = ['pendientes', 'compradas', 'no_compradas'] as const;
+    setActiveTab(tabs[newValue]);
+  };
+
+  const tabIndex = ['pendientes', 'compradas', 'no_compradas'].indexOf(activeTab);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">💰 Días de Salario</h1>
-            <p className="text-sm text-gray-600">¿Cuántos días de trabajo cuesta?</p>
-          </div>
-          <div className="flex items-center gap-4">
-            {status === 'loading' && <div className="text-sm text-gray-600">Cargando...</div>}
-            {session ? (
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
-                  <p className="text-xs text-gray-500">Autenticado</p>
-                </div>
-                <button
-                  onClick={() => signOut()}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition"
-                >
-                  Salir
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => signIn()}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition"
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f3f2f1' }}>
+      {/* Main Content */}
+      <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
+        {/* Auth Section */}
+        <Box
+          sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3, gap: 2 }}
+        >
+          {status === 'loading' && (
+            <Typography variant="body2" sx={{ color: '#605e5c' }}>
+              Cargando...
+            </Typography>
+          )}
+          {session ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#323130' }}>
+                  {session.user?.name}
+                </Typography>
+                <Typography variant="caption" sx={{ color: '#605e5c' }}>
+                  Autenticado
+                </Typography>
+              </Box>
+              <Button
+                onClick={() => signOut()}
+                variant="contained"
+                color="error"
+                size="small"
+                sx={{ textTransform: 'none' }}
               >
-                Iniciar sesión
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
+                Salir
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              onClick={() => signIn()}
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ textTransform: 'none' }}
+            >
+              Iniciar sesión
+            </Button>
+          )}
+        </Box>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Formulario */}
-        <div className="mb-8">
-          <ItemForm onItemCreated={handleItemCreated} onError={setError} />
-        </div>
+        {/* Item Form */}
+        <Card sx={{ mb: 4, boxShadow: '0 1px 2px rgba(16,16,16,0.04)' }}>
+          <CardContent>
+            <ItemForm onItemCreated={handleItemCreated} onError={setError} />
+          </CardContent>
+        </Card>
 
+        {/* Error Alert */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
-            <p className="font-medium">Error: {error}</p>
-          </div>
+          <Alert
+            severity="error"
+            sx={{ mb: 4, bgcolor: '#fde7e7', color: '#942911', border: '1px solid #fed0d0' }}
+          >
+            <Typography variant="body2">
+              <strong>Error:</strong> {error}
+            </Typography>
+          </Alert>
         )}
 
-        {/* Tabs para filtros */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex gap-4 mb-6 border-b">
-            <button
-              onClick={() => setActiveTab('pendientes')}
-              className={`px-4 py-2 font-medium border-b-2 transition ${
-                activeTab === 'pendientes'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              ⏳ Pendientes ({items.filter((i) => i.status === 'pending').length})
-            </button>
-            <button
-              onClick={() => setActiveTab('compradas')}
-              className={`px-4 py-2 font-medium border-b-2 transition ${
-                activeTab === 'compradas'
-                  ? 'border-green-600 text-green-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              ✅ Compradas ({items.filter((i) => i.status === 'purchased').length})
-            </button>
-            <button
-              onClick={() => setActiveTab('no_compradas')}
-              className={`px-4 py-2 font-medium border-b-2 transition ${
-                activeTab === 'no_compradas'
-                  ? 'border-red-600 text-red-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              ❌ No compradas ({items.filter((i) => i.status === 'not_purchased').length})
-            </button>
-          </div>
+        {/* Items Section */}
+        <Card sx={{ boxShadow: '0 1px 2px rgba(16,16,16,0.04)' }}>
+          <CardContent>
+            {/* Tabs */}
+            <Box sx={{ borderBottom: '1px solid #e1dfdd', mb: 3 }}>
+              <Tabs
+                value={tabIndex}
+                onChange={handleTabChange}
+                aria-label="filter tabs"
+                sx={{
+                  '& .MuiTab-root': {
+                    textTransform: 'none',
+                    fontSize: '0.95rem',
+                    fontWeight: 500,
+                    color: '#605e5c',
+                    '&.Mui-selected': {
+                      color: '#0078d4',
+                    },
+                  },
+                  '& .MuiTabs-indicator': {
+                    backgroundColor: '#0078d4',
+                  },
+                }}
+              >
+                <Tab label={`⏳ Pendientes (${pendingCount})`} />
+                <Tab label={`✅ Compradas (${purchasedCount})`} />
+                <Tab label={`❌ No compradas (${notPurchasedCount})`} />
+              </Tabs>
+            </Box>
 
-          {/* Lista de items */}
-          {filteredItems.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg mb-2">
-                {activeTab === 'pendientes' && '¡Agrega un artículo para comenzar!'}
-                {activeTab === 'compradas' && 'Sin artículos comprados aún.'}
-                {activeTab === 'no_compradas' && 'Sin artículos descartados aún.'}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-gray-900">{item.description}</h3>
-                      {item.notes && <p className="text-sm text-gray-600 mt-1">📝 {item.notes}</p>}
-                    </div>
-                    <div className="text-right ml-4">
-                      <p className="text-xl font-bold text-blue-600">${item.price.toFixed(2)}</p>
-                      <p className="text-sm text-gray-600">
-                        {Math.round((item.price / 241.56) * 10) / 10} días
-                      </p>
-                    </div>
-                  </div>
+            {/* Items List or Empty State */}
+            {filteredItems.length === 0 ? (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <Typography variant="h6" sx={{ color: '#605e5c', mb: 1 }}>
+                  {activeTab === 'pendientes' && '¡Agrega un artículo para comenzar!'}
+                  {activeTab === 'compradas' && 'Sin artículos comprados aún.'}
+                  {activeTab === 'no_compradas' && 'Sin artículos descartados aún.'}
+                </Typography>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {filteredItems.map((item, idx) => (
+                  <React.Fragment key={item.id}>
+                    <Box sx={{ p: 2 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={8}>
+                          <Typography
+                            variant="h6"
+                            sx={{ fontWeight: 600, color: '#323130', mb: 0.5 }}
+                          >
+                            {item.description}
+                          </Typography>
+                          {item.notes && (
+                            <Typography variant="body2" sx={{ color: '#605e5c', mb: 1 }}>
+                              📝 {item.notes}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" sx={{ color: '#707070' }}>
+                            📅 {new Date(item.createdAt).toLocaleDateString('es-MX')}
+                          </Typography>
+                        </Grid>
 
-                  {activeTab === 'pendientes' && (
-                    <div className="flex gap-2 mt-4">
-                      <button
-                        onClick={() => handleItemStatusChange(item.id, 'purchased')}
-                        className="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition"
-                      >
-                        ✅ Lo compré
-                      </button>
-                      <button
-                        onClick={() => handleItemStatusChange(item.id, 'not_purchased')}
-                        className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition"
-                      >
-                        ❌ No lo compré
-                      </button>
-                    </div>
-                  )}
+                        <Grid item xs={12} sm={4} sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
+                          <Typography
+                            variant="h5"
+                            sx={{
+                              fontWeight: 700,
+                              color: '#0078d4',
+                              mb: 0.5,
+                            }}
+                          >
+                            ${item.price.toFixed(2)}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: '#605e5c' }}>
+                            {Math.round((item.price / 241.56) * 10) / 10} días de salario
+                          </Typography>
+                        </Grid>
+                      </Grid>
 
-                  <p className="text-xs text-gray-500 mt-2">
-                    📅 {new Date(item.createdAt).toLocaleDateString('es-MX')}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                      {/* Action Buttons for Pending Items */}
+                      {activeTab === 'pendientes' && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            gap: 1.5,
+                            mt: 2,
+                            flexDirection: { xs: 'column', sm: 'row' },
+                          }}
+                        >
+                          <Button
+                            onClick={() => handleItemStatusChange(item.id, 'purchased')}
+                            variant="contained"
+                            sx={{
+                              backgroundColor: '#107c10',
+                              '&:hover': { backgroundColor: '#0b5f0b' },
+                              flex: 1,
+                              textTransform: 'none',
+                            }}
+                          >
+                            ✅ Lo compré
+                          </Button>
+                          <Button
+                            onClick={() => handleItemStatusChange(item.id, 'not_purchased')}
+                            variant="contained"
+                            sx={{
+                              backgroundColor: '#d13438',
+                              '&:hover': { backgroundColor: '#a4373a' },
+                              flex: 1,
+                              textTransform: 'none',
+                            }}
+                          >
+                            ❌ No lo compré
+                          </Button>
+                        </Box>
+                      )}
+                    </Box>
 
-        {/* Info de shadow profile */}
+                    {idx < filteredItems.length - 1 && (
+                      <Box sx={{ height: '1px', bgcolor: '#e1dfdd' }} />
+                    )}
+                  </React.Fragment>
+                ))}
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Shadow Profile Info */}
         {!session && (
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="font-semibold text-blue-900 mb-2">💡 Datos locales</h3>
-            <p className="text-sm text-blue-800 mb-2">
+          <Alert
+            severity="info"
+            sx={{
+              mt: 4,
+              bgcolor: '#eff6fc',
+              color: '#0078d4',
+              border: '1px solid #b4d6f5',
+              '& .MuiAlert-icon': { color: '#0078d4' },
+            }}
+          >
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
+              💡 Datos locales
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2 }}>
               Tus datos se guardan localmente en tu navegador. Si inicias sesión, podremos fusionar
               tu historial.
-            </p>
-            <button
+            </Typography>
+            <Button
               onClick={() => signIn()}
-              className="text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+              variant="text"
+              size="small"
+              sx={{ color: '#0078d4', textTransform: 'none', fontWeight: 600 }}
             >
               Iniciar sesión para sincronizar
-            </button>
-          </div>
+            </Button>
+          </Alert>
         )}
-      </main>
+      </Container>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12 py-6">
-        <div className="max-w-4xl mx-auto px-4 text-center text-sm text-gray-600">
-          <p>MVP &ldquo;Días de Salario&rdquo; © 2026 • Privacidad · Ayuda · Contacto</p>
-        </div>
-      </footer>
-    </div>
+      <Box
+        component="footer"
+        sx={{
+          bgcolor: '#ffffff',
+          borderTop: '1px solid #e1dfdd',
+          mt: 'auto',
+          py: 3,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Typography
+            variant="caption"
+            sx={{
+              display: 'block',
+              textAlign: 'center',
+              color: '#605e5c',
+            }}
+          >
+            MVP &ldquo;Días de Salario&rdquo; © 2026 • Privacidad · Ayuda · Contacto
+          </Typography>
+        </Container>
+      </Box>
+    </Box>
   );
 }
