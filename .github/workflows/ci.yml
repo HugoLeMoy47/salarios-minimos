@@ -27,8 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run ESLint
+      - name: Run ESLint + type-check
         run: npm run lint
+      - name: Run Markdown lint
+        run: npm run lint:md
 
       - name: Run tests
         run: npm test -- --coverage

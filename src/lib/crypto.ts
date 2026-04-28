@@ -3,6 +3,7 @@
  */
 
 import CryptoJS from 'crypto-js';
+import { logger } from './logger';
 
 // Nota: Para producción, usar una clave más segura y almacenarla de forma segura
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-dev-key-change-in-production';
@@ -16,7 +17,7 @@ export function encryptData(data: unknown): string {
     const encrypted = CryptoJS.AES.encrypt(jsonString, ENCRYPTION_KEY).toString();
     return encrypted;
   } catch (error) {
-    console.error('Error al cifrar:', error);
+    logger.error({ err: error }, 'Error al cifrar');
     throw new Error('No se pudo cifrar los datos');
   }
 }
@@ -31,7 +32,7 @@ export function decryptData(encryptedData: string): unknown {
     );
     return JSON.parse(decrypted);
   } catch (error) {
-    console.error('Error al descifrar:', error);
+    logger.error({ err: error }, 'Error al descifrar');
     throw new Error('No se pudo descifrar los datos');
   }
 }
@@ -44,7 +45,7 @@ export function hashData(data: unknown): string {
     const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
     return CryptoJS.SHA256(jsonString).toString();
   } catch (error) {
-    console.error('Error al hashear:', error);
+    logger.error({ err: error }, 'Error al hashear');
     throw new Error('No se pudo hashear los datos');
   }
 }

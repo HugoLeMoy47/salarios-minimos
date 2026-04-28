@@ -5,8 +5,10 @@ import {
   ThemeProvider as MuiThemeProvider,
   createTheme,
   responsiveFontSizes,
-  PaletteMode,
 } from '@mui/material/styles';
+
+// simple union para pallets
+export type PaletteMode = 'light' | 'dark';
 import CssBaseline from '@mui/material/CssBaseline';
 
 type ThemeContextType = {
@@ -42,7 +44,7 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [mode]);
 
-  const toggleMode = () => setMode((m) => (m === 'light' ? 'dark' : 'light'));
+  const toggleMode = () => setMode((m: PaletteMode) => (m === 'light' ? 'dark' : 'light'));
 
   const theme = useMemo(() => {
     const base = createTheme({

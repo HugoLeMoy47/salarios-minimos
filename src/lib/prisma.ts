@@ -3,11 +3,11 @@
  * Nota: Inicialización lazy-loaded mediante Proxy
  */
 
-import type { PrismaClient } from '@prisma/client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Usamos any para evitar problemas con el paquete (@prisma/client) configurado.
+let cachedPrisma: any = null;
 
-let cachedPrisma: PrismaClient | null = null;
-
-export function getPrismaClient(): PrismaClient {
+export function getPrismaClient(): any {
   if (cachedPrisma) {
     return cachedPrisma;
   }
@@ -24,7 +24,7 @@ export function getPrismaClient(): PrismaClient {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PrismaClient } = require('@prisma/client');
 
-    const globalForPrisma = global as unknown as { prisma?: PrismaClient };
+    const globalForPrisma = global as unknown as { prisma?: any };
 
     if (!globalForPrisma.prisma) {
       globalForPrisma.prisma = new PrismaClient({
@@ -50,7 +50,7 @@ const prismaHandler: ProxyHandler<Record<string, unknown>> = {
   },
 };
 
-const prisma = new Proxy({} as unknown as PrismaClient, prismaHandler);
+const prisma = new Proxy({} as unknown as any, prismaHandler);
 
 export { prisma };
 export default prisma;

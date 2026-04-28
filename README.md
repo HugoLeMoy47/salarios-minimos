@@ -1,6 +1,6 @@
 # 💰 Días de Salario - MVP
 
-**Descubre cuántos días de trabajo cuesta lo que deseas comprar**
+### Descubre cuántos días de trabajo cuesta lo que deseas comprar
 
 Una aplicación web moderna que te ayuda a visualizar el costo real de las cosas en términos de tu salario mínimo diario. Con funciones de seguimiento local, sincronización en la nube, y análisis de gastos anónimos.
 
@@ -87,7 +87,9 @@ La aplicación estará disponible en `http://localhost:3000`
 
 ## 📋 Configuración de variables de entorno
 
-Crea un archivo `.env.local` basado en `.env.example`:
+> 🛑 **Validación automática**: el proyecto valida las variables de entorno al arrancar. Si falta alguna requerida, fallará inmediatamente en desarrollo/producción. En modo `test` la validación se omite para facilitar las pruebas.
+
+Crea un archivo `.env.local` basado en `.env.example`: 
 
 ```dotenv
 # Base de datos
@@ -162,6 +164,9 @@ openssl rand -hex 16
 
 ## 📦 Scripts disponibles
 
+> **Nota**: se ha reforzado la calidad de código. Antes de commitear se ejecuta husky + lint-staged
+> que corre ESLint, Prettier, Chequeo de tipos y Markdown lint en los archivos modificados.
+
 ```bash
 # Desarrollo
 npm run dev                # Iniciar servidor de desarrollo
@@ -172,22 +177,38 @@ npm start                 # Iniciar servidor producción
 
 # Testing
 npm test                  # Ejecutar tests
-npm run test:watch       # Modo watch
-npm run test:coverage    # Cobertura de tests
+npm run test:watch        # Modo watch
+npm run test:coverage     # Cobertura de tests
 
-# Linting
-npm run lint             # ESLint + fix
-npm run format           # Prettier format
+# Linting & calidad
+npm run lint              # ESLint + fijo y comprobación de tipos
+npm run lint:md           # Revisar Markdown (markdownlint)
+npm run format            # Prettier format
 
 # Prisma
-npm run prisma:migrate   # Ejecutar migraciones
-npm run prisma:studio    # Abrir Prisma Studio (GUI)
-npm run prisma:generate  # Generar cliente Prisma
+npm run prisma:migrate    # Ejecutar migraciones
+npm run prisma:studio     # Abrir Prisma Studio (GUI)
+npm run prisma:generate   # Generar cliente Prisma
 ```
+
+## �️ Resiliencia y cacheo
+
+El backend incluye utilidades para mejorar la tolerancia a fallos y reducir
+latencia:
+
+- **`retry()`** helper con back-off exponencial utilizada en `item.service` y
+  otros servicios para reintentar operaciones Prisma o HTTP.
+- **Cache en memoria** de 60 segundos para consultas frecuentes (p.ej. los
+  items del usuario) con invalidación automática.
+- **`withApiHandler` middleware** para centralizar captura de excepciones y
+  devolver un 500 genérico, además de loguear con `pino`.
+- **Logging estructurado** en servidor (pino) y eventos importantes.
+
+Continúa la documentación detallada en `DOCS/RESILIENCE.md` (próximamente).
 
 ## 📚 Estructura del proyecto
 
-```
+```bash
 src/
 ├── app/                      # Next.js App Router
 │   ├── page.tsx             # Página principal
@@ -224,7 +245,7 @@ prisma/
 
 ### 1. Crear item sin cuenta (Shadow Profile)
 
-```
+```bash
 Usuario sin sesión
     ↓
 Rellena formulario (precio, descripción)
@@ -238,7 +259,7 @@ Pantalla: muestra en lista "Pendientes"
 
 ### 2. Iniciar sesión y sincronizar
 
-```
+```bash
 Usuario autenticado
     ↓
 POST /api/shadow-profile/merge
@@ -250,7 +271,7 @@ Usuario ve historial completo
 
 ### 3. Crear backup
 
-```
+```bash
 POST /api/backup/create
     ↓
 Backend: cifra datos JSON
@@ -262,7 +283,7 @@ Usuario: sube manualmente a Google Drive
 
 ### 4. Restaurar desde backup
 
-```
+```bash
 Usuario carga archivo JSON
     ↓
 POST /api/backup/restore
@@ -467,4 +488,4 @@ Es gratis. El MVP es de código abierto.
 
 ---
 
-**Hecho con ❤️ en 2026**
+Hecho con ❤️ en 2026

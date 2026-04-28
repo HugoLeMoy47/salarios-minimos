@@ -24,22 +24,8 @@ interface JWTToken {
   sub?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface AppleClientSecret {
-  teamId: string;
-  keyId: string;
-  key: string;
-}
 
 // Validar requeridos env vars en build time
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getRequiredEnv(key: string): string {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`);
-  }
-  return value;
-}
 
 function getOptionalEnv(key: string): string | undefined {
   return process.env[key];
@@ -96,7 +82,8 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn({ user, account }) {
-      console.log(`Usuario ${user.email} inició sesión con ${account?.provider}`);
+      const { logger } = await import('./logger');
+      logger.info(`Usuario ${user.email} inició sesión con ${account?.provider}`);
     },
   },
 };

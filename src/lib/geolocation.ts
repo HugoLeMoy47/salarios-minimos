@@ -2,7 +2,9 @@
  * Utilidades de geolocalización y geohashing para anonimización
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as geohash from 'geohash';
+import { logger } from './logger';
 
 /**
  * Convertir coordenadas a geohash de baja resolución (6 caracteres)
@@ -12,7 +14,19 @@ import * as geohash from 'geohash';
  */
 export function coordinatesToGeohash6(latitude: number, longitude: number): string {
   try {
-    const hash = geohash.encode(latitude, longitude);
+    // la librería expone GeoHash.encodeGeoHash en Node
+     
+    const encodeFn: any =
+      typeof (geohash as any).encode === 'function'
+        ? (geohash as any).encode
+        : (geohash as any).GeoHash?.encodeGeoHash;
+
+    if (typeof encodeFn !== 'function') {
+      // fallback simple placeholder
+      return '';
+    }
+
+    const hash: string = encodeFn(latitude, longitude);
     return hash.substring(0, 6);
   } catch {
     return '';
@@ -29,7 +43,7 @@ export async function requestGeolocation(): Promise<{
 } | null> {
   return new Promise((resolve) => {
     if (!navigator.geolocation) {
-      console.warn('Geolocation no soportada en este navegador');
+      logger.warn('Geolocation no soportada en este navegador');
       resolve(null);
       return;
     }
@@ -42,7 +56,7 @@ export async function requestGeolocation(): Promise<{
         });
       },
       (error) => {
-        console.warn('Error de geolocalización:', error.message);
+        logger.warn({ err: error }, 'Error de geolocalización');
         resolve(null);
       },
       {

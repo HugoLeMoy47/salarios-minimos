@@ -4,6 +4,7 @@
  */
 
 import { get, set, del } from 'idb-keyval';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface LocalItem {
   id: string;
@@ -33,11 +34,8 @@ const SHADOW_UUID_KEY = 'shadow-uuid';
  * Generar un UUID v4 simple
  */
 export function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+  // usamos uuidv4, que es RFC‑4122 compliant y ampliamente probado
+  return uuidv4();
 }
 
 /**
@@ -56,7 +54,8 @@ export async function getShadowUUID(): Promise<string> {
  * Obtener el shadow profile completo
  */
 export async function getShadowProfile(): Promise<ShadowProfile | null> {
-  return await get<ShadowProfile>(SHADOW_PROFILE_KEY);
+  const data = await get<ShadowProfile>(SHADOW_PROFILE_KEY);
+  return data ?? null;
 }
 
 /**
