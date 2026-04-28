@@ -15,7 +15,8 @@ export interface LocalItem {
   latitude?: number;
   longitude?: number;
   geohash?: string;
-  status: 'pending' | 'purchased' | 'not_purchased';
+  status: 'pending' | 'meditating' | 'purchased' | 'not_purchased' | 'cancelled';
+  meditationStartedAt?: string; // ISO string
   postponedUntil?: string;
   createdAt: string;
   updatedAt: string;
@@ -24,6 +25,8 @@ export interface LocalItem {
 export interface ShadowProfile {
   uuid: string;
   items: LocalItem[];
+  zone?: 'general' | 'frontera'; // Zona de salario mínimo
+  monthlyIncome?: number; // Ingreso mensual neto en MXN
   createdAt: string;
 }
 
@@ -170,8 +173,22 @@ export async function prepareShadowProfileMerge(): Promise<LocalItem[]> {
 }
 
 /**
- * Completar fusión del shadow profile (después de que se haya guardado en DB)
+ * Obtener configuración del usuario (zona e ingreso)
  */
-export async function completeShadowProfileMerge(): Promise<void> {
-  await clearShadowProfile();
+export async function getUserConfig(): Promise<{ zone?: 'general' | 'frontera'; monthlyIncome?: number }> {
+  const profile = await getOrCreateShadowProfile();
+  return {
+    zone: profile.zone,
+    monthlyIncome: profile.monthlyIncome,
+  };
+}
+
+/**
+ * Actualizar configuración del usuario
+ */
+export async function updateUserConfig(config: { zone?: 'general' | 'frontera'; monthlyIncome?: number }): Promise<void> {
+  const profile = await getOrCreateShadowProfile();
+  profile.zone = config.zone ?? profile.zone;
+  profile.monthlyIncome = config.monthlyIncome ?? profile.monthlyIncome;
+  await set(SHADOW_PROFILE_KEY, profile);
 }

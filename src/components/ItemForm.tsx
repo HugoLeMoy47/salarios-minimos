@@ -1,17 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import {
   calculateSalaryDays,
   getSalaryDaysExplanation,
   getMinimumSalaryDaily,
   getSalaryDaysBucket,
+  type SalaryZone,
 } from '@/lib/salary-calculator';
-import { addItemToShadowProfile, LocalItem } from '@/lib/shadow-profile';
+import { addItemToShadowProfile, LocalItem, getUserConfig } from '@/lib/shadow-profile';
 import {
   requestGeolocation,
   coordinatesToGeohash6,
@@ -34,15 +37,29 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [salaryDays, setSalaryDays] = useState<number | null>(null);
   const [requestingLocation, setRequestingLocation] = useState(false);
+  const [userConfig, setUserConfig] = useState<{ zone?: SalaryZone; monthlyIncome?: number }>({});
+  const [sendToMeditation, setSendToMeditation] = useState(false);
 
-  const minimumSalary = getMinimumSalaryDaily();
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const config = await getUserConfig();
+        setUserConfig(config);
+      } catch (err) {
+        console.error('Error cargando configuración:', err);
+      }
+    };
+    loadConfig();
+  }, []);
+
+  const minimumSalary = getMinimumSalaryDaily(userConfig.zone || 'general');
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const price = e.target.value;
     setFormData({ ...formData, price });
 
     if (price) {
-      const days = calculateSalaryDays(parseFloat(price));
+      const days = calculateSalaryDays(parseFloat(price), userConfig.zone || 'general');
       setSalaryDays(days);
     } else {
       setSalaryDays(null);
@@ -102,12 +119,13 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
         latitude,
         longitude,
         geohash,
-        status: 'pending',
+        status: sendToMeditation ? 'meditating' : 'pending',
+        meditationStartedAt: sendToMeditation ? new Date().toISOString() : undefined,
       });
 
       // Enviar evento anonimizado
       try {
-        const bucket = getSalaryDaysBucket(calculateSalaryDays(parseFloat(formData.price)));
+        const bucket = getSalaryDaysBucket(calculateSalaryDays(parseFloat(formData.price), userConfig.zone || 'general'));
         await fetch('/api/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -125,6 +143,7 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
       onItemCreated(newItem);
       setFormData({ description: '', price: '', notes: '', photoUrl: '' });
       setSalaryDays(null);
+      setSendToMeditation(false);
     } catch (error) {
       onError(error instanceof Error ? error.message : 'Error al crear item');
     } finally {
@@ -172,7 +191,7 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
             }}
           >
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              {getSalaryDaysExplanation(parseFloat(formData.price))}
+              {getSalaryDaysExplanation(parseFloat(formData.price), userConfig.zone || 'general', userConfig.monthlyIncome)}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Basado en salario mínimo: ${minimumSalary}/día
@@ -191,6 +210,17 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
           variant="outlined"
         />
 
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={sendToMeditation}
+              onChange={(e) => setSendToMeditation(e.target.checked)}
+              color="primary"
+            />
+          }
+          label="Enviar directamente a meditación (72 horas de reflexión)"
+        />
+
         <Box sx={{ display: 'flex', gap: 1, mt: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Button
             type="submit"
@@ -199,7 +229,7 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
             sx={{ flex: 1 }}
             disabled={isLoading}
           >
-            {isLoading ? 'Creando...' : 'Crear artículo'}
+            {isLoading ? 'Creando...' : sendToMeditation ? 'Iniciando Meditación...' : 'Crear artículo'}
           </Button>
           <Button
             type="button"

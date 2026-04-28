@@ -14,28 +14,34 @@ import {
   Grid,
   Alert,
 } from '@mui/material';
+import Link from 'next/link';
 import { ItemForm } from '@/components/ItemForm';
-import { LocalItem, getAllShadowItems } from '@/lib/shadow-profile';
+import { MeditationTimer } from '@/components/MeditationTimer';
+import { LocalItem, getAllShadowItems, getUserConfig } from '@/lib/shadow-profile';
+import { calculateSalaryDays } from '@/lib/salary-calculator';
 
 export default function Home() {
   const { data: session, status } = useSession();
   const [items, setItems] = useState<LocalItem[]>([]);
   const [error, setError] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'pendientes' | 'compradas' | 'no_compradas'>(
+  const [activeTab, setActiveTab] = useState<'pendientes' | 'meditando' | 'compradas' | 'no_compradas'>(
     'pendientes'
   );
+  const [userConfig, setUserConfig] = useState<{ zone?: string; monthlyIncome?: number }>({});
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchData = async () => {
       try {
         const shadowItems = await getAllShadowItems();
         setItems(shadowItems);
+        const config = await getUserConfig();
+        setUserConfig(config);
       } catch (err) {
-        console.error('Error cargando items:', err);
+        console.error('Error cargando datos:', err);
       }
     };
 
-    fetchItems();
+    fetchData();
   }, []);
 
   const handleItemCreated = async (newItem: LocalItem) => {
@@ -45,14 +51,15 @@ export default function Home() {
 
   const handleItemStatusChange = async (
     itemId: string,
-    newStatus: 'purchased' | 'not_purchased'
+    newStatus: 'pending' | 'purchased' | 'not_purchased' | 'meditating' | 'cancelled'
   ) => {
     setItems(items.map((item) => (item.id === itemId ? { ...item, status: newStatus } : item)));
   };
 
   const getFilteredItems = () => {
-    const statusMap: Record<string, 'pending' | 'purchased' | 'not_purchased'> = {
+    const statusMap: Record<string, string> = {
       pendientes: 'pending',
+      meditando: 'meditating',
       compradas: 'purchased',
       no_compradas: 'not_purchased',
     };
@@ -61,15 +68,16 @@ export default function Home() {
 
   const filteredItems = getFilteredItems();
   const pendingCount = items.filter((i) => i.status === 'pending').length;
+  const meditatingCount = items.filter((i) => i.status === 'meditating').length;
   const purchasedCount = items.filter((i) => i.status === 'purchased').length;
   const notPurchasedCount = items.filter((i) => i.status === 'not_purchased').length;
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    const tabs = ['pendientes', 'compradas', 'no_compradas'] as const;
+    const tabs = ['pendientes', 'meditando', 'compradas', 'no_compradas'] as const;
     setActiveTab(tabs[newValue]);
   };
 
-  const tabIndex = ['pendientes', 'compradas', 'no_compradas'].indexOf(activeTab);
+  const tabIndex = ['pendientes', 'meditando', 'compradas', 'no_compradas'].indexOf(activeTab);
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f3f2f1' }}>
@@ -136,6 +144,29 @@ export default function Home() {
           </Alert>
         )}
 
+        {/* Config Alert */}
+        {(!userConfig.zone || !userConfig.monthlyIncome) && (
+          <Alert
+            severity="info"
+            sx={{ mb: 4, bgcolor: '#e7f3ff', color: '#0f3c5a', border: '1px solid #c7e4f7' }}
+            action={
+              <Button
+                component={Link}
+                href="/onboarding"
+                variant="outlined"
+                size="small"
+                sx={{ textTransform: 'none' }}
+              >
+                Configurar
+              </Button>
+            }
+          >
+            <Typography variant="body2">
+              <strong>Configura tu zona e ingreso mensual</strong> para cálculos personalizados de días de salario y porcentaje de tu ingreso.
+            </Typography>
+          </Alert>
+        )}
+
         {/* Items Section */}
         <Card sx={{ boxShadow: '0 1px 2px rgba(16,16,16,0.04)' }}>
           <CardContent>
@@ -161,8 +192,9 @@ export default function Home() {
                 }}
               >
                 <Tab label={`⏳ Pendientes (${pendingCount})`} />
+                <Tab label={`🧘 Meditando (${meditatingCount})`} />
                 <Tab label={`✅ Compradas (${purchasedCount})`} />
-                <Tab label={`❌ No compradas (${notPurchasedCount})`} />
+                <Tab label={`❌ Canceladas (${notPurchasedCount})`} />
               </Tabs>
             </Box>
 
@@ -171,8 +203,9 @@ export default function Home() {
               <Box sx={{ textAlign: 'center', py: 6 }}>
                 <Typography variant="h6" sx={{ color: '#605e5c', mb: 1 }}>
                   {activeTab === 'pendientes' && '¡Agrega un artículo para comenzar!'}
+                  {activeTab === 'meditando' && 'Sin artículos en meditación.'}
                   {activeTab === 'compradas' && 'Sin artículos comprados aún.'}
-                  {activeTab === 'no_compradas' && 'Sin artículos descartados aún.'}
+                  {activeTab === 'no_compradas' && 'Sin artículos cancelados aún.'}
                 </Typography>
               </Box>
             ) : (
@@ -210,7 +243,7 @@ export default function Home() {
                             ${item.price.toFixed(2)}
                           </Typography>
                           <Typography variant="body2" sx={{ color: '#605e5c' }}>
-                            {Math.round((item.price / 241.56) * 10) / 10} días de salario
+                            {calculateSalaryDays(item.price, (userConfig.zone as 'general' | 'frontera') || 'general')} días de salario
                           </Typography>
                         </Grid>
                       </Grid>
@@ -238,7 +271,7 @@ export default function Home() {
                             ✅ Lo compré
                           </Button>
                           <Button
-                            onClick={() => handleItemStatusChange(item.id, 'not_purchased')}
+                            onClick={() => handleItemStatusChange(item.id, 'cancelled')}
                             variant="contained"
                             sx={{
                               backgroundColor: '#d13438',
@@ -249,6 +282,55 @@ export default function Home() {
                           >
                             ❌ No lo compré
                           </Button>
+                        </Box>
+                      )}
+
+                      {/* Meditation Timer and Actions for Meditating Items */}
+                      {activeTab === 'meditando' && item.meditationStartedAt && (
+                        <Box sx={{ mt: 2 }}>
+                          <MeditationTimer
+                            startedAt={item.meditationStartedAt}
+                            onComplete={() => {
+                              // Auto-move to pending when meditation completes
+                              handleItemStatusChange(item.id, 'pending');
+                            }}
+                          />
+                          <Typography variant="body2" sx={{ mt: 1, color: '#605e5c' }}>
+                            Tu &apos;yo del futuro&apos; está evaluando si esto vale{' '}
+                            {calculateSalaryDays(item.price, (userConfig.zone as 'general' | 'frontera') || 'general')} días de trabajo.
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              gap: 1.5,
+                              mt: 2,
+                              flexDirection: { xs: 'column', sm: 'row' },
+                            }}
+                          >
+                            <Button
+                              onClick={() => handleItemStatusChange(item.id, 'purchased')}
+                              variant="contained"
+                              disabled
+                              sx={{
+                                backgroundColor: '#cccccc',
+                                flex: 1,
+                                textTransform: 'none',
+                              }}
+                            >
+                              ⏳ Bloqueado hasta completar meditación
+                            </Button>
+                            <Button
+                              onClick={() => handleItemStatusChange(item.id, 'cancelled')}
+                              variant="outlined"
+                              color="error"
+                              sx={{
+                                flex: 1,
+                                textTransform: 'none',
+                              }}
+                            >
+                              ❌ Cancelar meditación
+                            </Button>
+                          </Box>
                         </Box>
                       )}
                     </Box>

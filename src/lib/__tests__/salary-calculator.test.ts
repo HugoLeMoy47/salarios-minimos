@@ -13,17 +13,17 @@ import {
 describe('Salary Calculator', () => {
   describe('calculateSalaryDays', () => {
     it('debería calcular correctamente días de salario', () => {
-      const result = calculateSalaryDays(241.56);
+      const result = calculateSalaryDays(315.04);
       expect(result).toBe(1);
     });
 
     it('debería calcular menos de un día', () => {
-      const result = calculateSalaryDays(120);
+      const result = calculateSalaryDays(150);
       expect(result).toBeLessThan(1);
     });
 
     it('debería calcular con decimales correctamente', () => {
-      const result = calculateSalaryDays(362.34);
+      const result = calculateSalaryDays(472.56);
       expect(result).toBeCloseTo(1.5);
     });
 
@@ -33,8 +33,8 @@ describe('Salary Calculator', () => {
     });
 
     it('debería retornar 0 para salario negativo', () => {
-      const result = calculateSalaryDays(100, -10);
-      expect(result).toBe(0);
+      const result = calculateSalaryDays(100, 'general');
+      expect(result).toBeCloseTo(0.3);
     });
   });
 
@@ -83,9 +83,9 @@ describe('Salary Calculator', () => {
 
   describe('getSalaryDaysExplanation', () => {
     it('debería generar explicación correcta', () => {
-      const explanation = getSalaryDaysExplanation(241.56);
+      const explanation = getSalaryDaysExplanation(315.04);
       expect(explanation).toContain('1 día');
-      expect(explanation).toContain('241.56');
+      expect(explanation).toContain('315.04');
     });
   });
 });

@@ -59,10 +59,12 @@ describe('Shadow Profile Utilities', () => {
 
   describe('Status values', () => {
     it('debería permitir status válidos', () => {
-      const validStatuses: Array<'pending' | 'purchased' | 'not_purchased'> = [
+      const validStatuses: LocalItem['status'][] = [
         'pending',
+        'meditating',
         'purchased',
         'not_purchased',
+        'cancelled',
       ];
 
       validStatuses.forEach((status) => {

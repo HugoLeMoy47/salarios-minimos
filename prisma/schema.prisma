@@ -26,6 +26,10 @@ model User {
   consentGiven          Boolean                @default(false)
   consentTimestamp      DateTime?
   
+  // Configuración de ingresos
+  zone                  String?                // "general" o "frontera"
+  monthlyIncome         Float?                 // Ingreso mensual neto en MXN
+  
   // Relaciones
   items                 Item[]
   shadowProfile         ShadowProfile?
@@ -63,7 +67,8 @@ model Item {
   geohash               String?                // Geohash de baja resolución
   
   // Estados
-  status                String                 @default("pending") // pending, purchased, not_purchased
+  status                ItemStatus             @default(PENDING)
+  meditationStartedAt   DateTime?              // Cuando inició la meditación
   postponedUntil        DateTime?              // Si está pospuesto
   notificationSent      Boolean                @default(false)
   
@@ -75,6 +80,14 @@ model Item {
   
   @@index([userId])
   @@index([status])
+}
+
+// Enum para estados del item
+enum ItemStatus {
+  PENDING
+  MEDITATING
+  PURCHASED
+  CANCELLED
 }
 
 // Backup de datos del usuario
