@@ -17,6 +17,7 @@ export interface LocalItem {
   geohash?: string;
   status: 'pending' | 'meditating' | 'purchased' | 'not_purchased' | 'cancelled';
   meditationStartedAt?: string; // ISO string
+  meditationEndsAt?: string; // ISO string, 72 horas después
   postponedUntil?: string;
   createdAt: string;
   updatedAt: string;

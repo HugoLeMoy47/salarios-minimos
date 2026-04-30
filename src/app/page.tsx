@@ -17,6 +17,8 @@ import {
 import Link from 'next/link';
 import { ItemForm } from '@/components/ItemForm';
 import { MeditationTimer } from '@/components/MeditationTimer';
+import { FinancialHealthSummary } from '@/components/FinancialHealthSummary';
+import { CreditMarketplace } from '@/components/CreditMarketplace';
 import { LocalItem, getAllShadowItems, getUserConfig } from '@/lib/shadow-profile';
 import { calculateSalaryDays } from '@/lib/salary-calculator';
 
@@ -27,7 +29,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'meditando' | 'compradas' | 'no_compradas'>(
     'pendientes'
   );
-  const [userConfig, setUserConfig] = useState<{ zone?: string; monthlyIncome?: number }>({});
+  const [userConfig, setUserConfig] = useState<{ zone?: 'general' | 'frontera'; monthlyIncome?: number }>({});
+  const [victoryMessage, setVictoryMessage] = useState<{ show: boolean; days: number }>({ show: false, days: 0 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +56,12 @@ export default function Home() {
     itemId: string,
     newStatus: 'pending' | 'purchased' | 'not_purchased' | 'meditating' | 'cancelled'
   ) => {
+    const item = items.find(i => i.id === itemId);
+    if (newStatus === 'cancelled' && item) {
+      const recoveredDays = calculateSalaryDays(item.price, (userConfig.zone as 'general' | 'frontera') || 'general');
+      setVictoryMessage({ show: true, days: recoveredDays });
+      setTimeout(() => setVictoryMessage({ show: false, days: 0 }), 5000);
+    }
     setItems(items.map((item) => (item.id === itemId ? { ...item, status: newStatus } : item)));
   };
 
@@ -131,6 +140,9 @@ export default function Home() {
             <ItemForm onItemCreated={handleItemCreated} onError={setError} />
           </CardContent>
         </Card>
+
+        {/* Financial Health Summary */}
+        <FinancialHealthSummary items={items} userConfig={userConfig} victoryMessage={victoryMessage} />
 
         {/* Error Alert */}
         {error && (
@@ -310,14 +322,16 @@ export default function Home() {
                             <Button
                               onClick={() => handleItemStatusChange(item.id, 'purchased')}
                               variant="contained"
-                              disabled
+                              disabled={item.meditationEndsAt ? new Date(item.meditationEndsAt).getTime() > Date.now() : true}
                               sx={{
-                                backgroundColor: '#cccccc',
+                                backgroundColor: item.meditationEndsAt && new Date(item.meditationEndsAt).getTime() <= Date.now() ? '#107c10' : '#cccccc',
+                                '&:hover': item.meditationEndsAt && new Date(item.meditationEndsAt).getTime() <= Date.now() ? { backgroundColor: '#0b5f0b' } : {},
+                                '&:disabled': { backgroundColor: '#e0e0e0' },
                                 flex: 1,
                                 textTransform: 'none',
                               }}
                             >
-                              ⏳ Bloqueado hasta completar meditación
+                              {item.meditationEndsAt && new Date(item.meditationEndsAt).getTime() <= Date.now() ? '✅ Marcar como comprado' : '⏳ Bloqueado hasta completar meditación'}
                             </Button>
                             <Button
                               onClick={() => handleItemStatusChange(item.id, 'cancelled')}
@@ -328,7 +342,7 @@ export default function Home() {
                                 textTransform: 'none',
                               }}
                             >
-                              ❌ Cancelar meditación
+                              ❌ Cancelar Compra
                             </Button>
                           </Box>
                         </Box>
@@ -374,6 +388,13 @@ export default function Home() {
             </Button>
           </Alert>
         )}
+
+        {/* Credit Marketplace */}
+        <CreditMarketplace
+          items={items}
+          userConfig={userConfig}
+          userName={session?.user?.name || 'Usuario'}
+        />
       </Container>
 
       {/* Footer */}

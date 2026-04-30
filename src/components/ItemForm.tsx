@@ -61,8 +61,15 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
     if (price) {
       const days = calculateSalaryDays(parseFloat(price), userConfig.zone || 'general');
       setSalaryDays(days);
+
+      // Verificar si debe ir a meditación (10% del ingreso mensual)
+      if (userConfig.monthlyIncome) {
+        const threshold = userConfig.monthlyIncome * 0.1;
+        setSendToMeditation(parseFloat(price) > threshold);
+      }
     } else {
       setSalaryDays(null);
+      setSendToMeditation(false);
     }
   };
 
@@ -111,6 +118,8 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
       }
 
       // Crear item en shadow profile local
+      const now = new Date();
+      const meditationEndsAt = sendToMeditation ? new Date(now.getTime() + 72 * 60 * 60 * 1000).toISOString() : undefined;
       const newItem = await addItemToShadowProfile({
         price: parseFloat(formData.price),
         description: formData.description,
@@ -120,7 +129,8 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
         longitude,
         geohash,
         status: sendToMeditation ? 'meditating' : 'pending',
-        meditationStartedAt: sendToMeditation ? new Date().toISOString() : undefined,
+        meditationStartedAt: sendToMeditation ? now.toISOString() : undefined,
+        meditationEndsAt,
       });
 
       // Enviar evento anonimizado
@@ -210,16 +220,24 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
           variant="outlined"
         />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={sendToMeditation}
-              onChange={(e) => setSendToMeditation(e.target.checked)}
-              color="primary"
-            />
-          }
-          label="Enviar directamente a meditación (72 horas de reflexión)"
-        />
+        {sendToMeditation && (
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: 'warning.light',
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'warning.main',
+            }}
+          >
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              🧘 Este artículo entrará en período de meditación (72 horas)
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Precio supera el 10% de tu ingreso mensual reportado.
+            </Typography>
+          </Box>
+        )}
 
         <Box sx={{ display: 'flex', gap: 1, mt: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Button

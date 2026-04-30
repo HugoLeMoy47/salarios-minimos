@@ -69,6 +69,7 @@ model Item {
   // Estados
   status                ItemStatus             @default(PENDING)
   meditationStartedAt   DateTime?              // Cuando inició la meditación
+  meditationEndsAt      DateTime?              // 72 horas después del inicio
   postponedUntil        DateTime?              // Si está pospuesto
   notificationSent      Boolean                @default(false)
   

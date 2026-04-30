@@ -12,33 +12,92 @@ Una aplicación web moderna que te ayuda a visualizar el costo real de las cosas
 - **Respaldo seguro**: Exporta tus datos en JSON cifrado y respaldalos en Google Drive
 - **Privacidad garantizada**: Los datos se anoniman antes de enviarse para análisis
 - **Multiplataforma**: Funciona en desktop, tablet y móvil
+- **Cámara de Meditación**: Período de 72 horas de reflexión antes de compras impulsivas
+- **Resumen de Salud Financiera**: Visualiza tu impacto en "días de vida" recuperados
+- **Marketplace Inteligente**: Ofertas de crédito basadas en tu historial de autocontrol
 
-## 🚀 Inicio rápido
+## � Guía de uso
+
+### Primeros pasos
+
+1. **Configuración inicial**: Al abrir la app, configura tu zona salarial (general/frontera) e ingreso mensual en el onboarding.
+
+2. **Agregar artículos**: Usa el formulario principal para ingresar productos que deseas comprar. La app calcula automáticamente los días de salario requeridos.
+
+### Funcionalidades principales
+
+#### 🧘 Cámara de Meditación
+- **Activación automática**: Compras que superan el 10% de tu ingreso mensual entran automáticamente en período de meditación (72 horas).
+- **Cronómetro visual**: Muestra tiempo restante y progreso.
+- **Opciones**: Puedes cancelar la compra o esperar para comprarla.
+
+#### 📊 Resumen de Salud Financiera
+- **Indicadores en tiempo real**: Visualiza tu impacto en "días de vida" comprometidos, en evaluación y recuperados.
+- **Nudges inteligentes**: Alertas cuando evalúas comprometer mucho de tu ingreso mensual.
+- **Refuerzo positivo**: Celebración cuando cancelas compras impulsivas.
+
+#### 💳 Marketplace Inteligente
+- **Ofertas personalizadas**: Productos financieros con tasas preferenciales basadas en tu historial de autocontrol.
+- **Lead generation**: Al solicitar información, se registra tu "Score de Meditación" para las financieras.
+- **Gating por responsabilidad**: Mejores ofertas desbloqueadas al demostrar autocontrol financiero.
+
+### Gestión de datos
+
+- **Local primero**: Todos los datos se guardan en tu navegador (IndexedDB).
+- **Sincronización opcional**: Inicia sesión para fusionar datos entre dispositivos.
+- **Privacidad**: Datos anonimizados para análisis; respaldos cifrados en Google Drive.
+
+## �🚀 Inicio rápido
 
 ### Requisitos previos
+
+- **Node.js**: Versión 18 o superior
+- **npm**: Versión 8 o superior (viene con Node.js)
+- **Git**: Para clonar el repositorio
 
 ### Instalación local
 
 ```bash
-# Clonar el repositorio
-git clone <repository-url>
+# 1. Clonar el repositorio
+git clone https://github.com/HugoLeMoy47/salarios-minimos.git
 cd salarios-minimos
 
-# Instalar dependencias
+# 2. Instalar dependencias
 npm install
 
-# Configurar variables de entorno
-cp .env.example .env
+# 3. Configurar variables de entorno
+cp .env.example .env.local
 
-# Inicializar base de datos (desarrollo: SQLite)
+# Editar .env.local con tus valores (ver sección de configuración abajo)
+
+# 4. Inicializar base de datos (desarrollo: SQLite)
 npx prisma migrate dev
 npx prisma generate
 
-# Iniciar servidor de desarrollo
+# 5. Iniciar servidor de desarrollo
 npm run dev
 ```
 
-## UI: Material Design, Dark Mode & Accessibility Update
+La aplicación estará disponible en `http://localhost:3000`
+
+### Comandos disponibles
+
+```bash
+# Desarrollo
+npm run dev          # Servidor de desarrollo
+npm run build        # Construir para producción
+npm run start        # Servidor de producción
+
+# Calidad de código
+npm run lint         # Linting y type checking
+npm run format       # Formateo de código
+npm run test         # Ejecutar pruebas
+
+# Base de datos
+npm run prisma:migrate  # Migrar base de datos
+npm run prisma:generate # Generar cliente Prisma
+npm run prisma:studio   # Abrir Prisma Studio
+```
 
 ### Visual Design & Accessibility Improvements
 

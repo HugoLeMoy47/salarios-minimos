@@ -85,3 +85,14 @@ export function getSalaryDaysBucket(days: number): string {
   if (days < 7) return '3-6.9';
   return '7+';
 }
+
+/**
+ * Calcular días de vida recuperados por items cancelados
+ * @param cancelledItems Array de precios de items cancelados
+ * @param zone Zona del salario mínimo
+ * @returns Días totales recuperados
+ */
+export function calculateTotalLifeRecovered(cancelledItems: number[], zone: SalaryZone = 'general'): number {
+  const totalAmount = cancelledItems.reduce((sum, price) => sum + price, 0);
+  return calculateSalaryDays(totalAmount, zone);
+}
