@@ -19,7 +19,7 @@ Estrategia y prácticas de testing para **Días de Salario**.
 
 ### Pirámide de testing
 
-```
+```text
          E2E (5%)
         /       \
        /         \
@@ -100,7 +100,7 @@ process.env.DATABASE_URL = 'postgresql://test:test@localhost/test';
 
 ### Estructura de archivos
 
-```
+```text
 src/lib/
   salary-calculator.ts
   __tests__/
@@ -378,7 +378,7 @@ npx playwright test create-item.spec.ts
 
 ### Target
 
-```
+```text
 Statements   : 80%
 Branches     : 75%
 Functions    : 80%

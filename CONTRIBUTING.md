@@ -67,7 +67,7 @@ git checkout -b feature/nombre-de-feature
 
 **Nombres de ramas recomendados:**
 
-```
+```text
 fix/descripcion-del-fix           # Arreglo de bug
 feature/descripcion-de-feature    # Nueva funcionalidad
 docs/descripcion-de-cambio        # Documentación
@@ -196,6 +196,7 @@ import { UserCard } from '@/components/UserCard';
    ```
 
 4. **Build**:
+
    ```bash
    npm run build
    ```
@@ -283,7 +284,7 @@ Qué pasa realmente.
 
 Pega aquí los errores de consola
 
-```
+```text
 
 ## Capturas de pantalla
 Si aplica, añade screenshots.

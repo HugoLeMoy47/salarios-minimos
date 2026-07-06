@@ -5,37 +5,36 @@
 
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { ConsentSchema, parseAndValidate } from '@/lib/validation';
+import { withApiHandler } from '@/lib/api-handler';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/consent - Registrar consentimiento
  * Body: { type: 'notifications' | 'geolocation' | 'analytics', consent: boolean }
  */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { type, consent, userId } = body;
+export const POST = withApiHandler(async (request: NextRequest) => {
+  logger.debug('POST /api/consent called');
+  const body = await request.json();
+  const result = parseAndValidate(ConsentSchema, body);
 
-    if (!type || typeof consent !== 'boolean') {
-      return NextResponse.json({ error: 'type y consent son requeridos' }, { status: 400 });
-    }
-
-    const validTypes = ['notifications', 'geolocation', 'analytics'];
-    if (!validTypes.includes(type)) {
-      return NextResponse.json({ error: 'type no válido' }, { status: 400 });
-    }
-
-    const consentLog = await prisma.consentLog.create({
-      data: {
-        userId: userId || null,
-        type,
-        consent,
-        timestamp: new Date(),
-      },
-    });
-
-    return NextResponse.json(consentLog, { status: 201 });
-  } catch (error) {
-    console.error('Error al registrar consentimiento:', error);
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+  if (!result.success) {
+    return NextResponse.json(
+      { error: 'Validación fallida', details: result.error.flatten().fieldErrors },
+      { status: 400 }
+    );
   }
-}
+
+  const { type, consent, userId } = result.data;
+
+  const consentLog = await prisma.consentLog.create({
+    data: {
+      userId: userId || null,
+      type,
+      consent,
+      timestamp: new Date(),
+    },
+  });
+
+  return NextResponse.json(consentLog, { status: 201 });
+});

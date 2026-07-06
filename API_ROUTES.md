@@ -20,7 +20,7 @@ Referencia completa de todos los endpoints disponibles en **Días de Salario**.
 
 Los endpoints de autenticación son manejados automáticamente por NextAuth.
 
-```
+```text
 GET/POST /api/auth/signin[/provider]      # Página de login
 GET/POST /api/auth/callback/[provider]    # Callback del OAuth
 GET      /api/auth/session                 # Obtener sesión actual
@@ -52,7 +52,7 @@ Endpoints para crear, leer, actualizar y eliminar artículos.
 
 ### Listar items
 
-```
+```http
 GET /api/items
 ```
 
@@ -60,7 +60,7 @@ GET /api/items
 
 **Query params**:
 
-```
+```text
 ?status=pending      # Filtrar por estado
 ?userId=..           # (Admin only) Ver items de otro usuario
 ```
@@ -94,7 +94,7 @@ GET /api/items
 
 ### Crear item
 
-```
+```http
 POST /api/items
 ```
 
@@ -145,7 +145,7 @@ const schema = z.object({
 
 ### Obtener item
 
-```
+```http
 GET /api/items/:id
 ```
 
@@ -172,7 +172,7 @@ GET /api/items/:id
 
 ### Actualizar item
 
-```
+```http
 PUT /api/items/:id
 ```
 
@@ -206,7 +206,7 @@ PUT /api/items/:id
 
 ### Eliminar item
 
-```
+```http
 DELETE /api/items/:id
 ```
 
@@ -228,7 +228,7 @@ Endpoints para manejar el perfil local (shadow) y su fusión con cuenta autentic
 
 ### Obtener shadow profile
 
-```
+```http
 GET /api/shadow-profile
 ```
 
@@ -236,7 +236,7 @@ GET /api/shadow-profile
 
 **Query params**:
 
-```
+```text
 ?uuid=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
@@ -256,7 +256,7 @@ GET /api/shadow-profile
 
 ### Fusionar shadow profile
 
-```
+```http
 POST /api/shadow-profile/merge
 ```
 
@@ -304,7 +304,7 @@ Endpoints para registrar eventos anonimizados (analytics).
 
 ### Crear evento
 
-```
+```http
 POST /api/events
 ```
 
@@ -352,7 +352,7 @@ const validBuckets = ['0-0.9', '1-2.9', '3-6.9', '7+'];
 
 ### Obtener estadísticas
 
-```
+```http
 GET /api/events
 ```
 
@@ -360,7 +360,7 @@ GET /api/events
 
 **Query params**:
 
-```
+```text
 ?startDate=2024-01-01
 ?endDate=2024-02-28
 ?eventType=item_created
@@ -398,7 +398,7 @@ Endpoints para crear y restaurar backups cifrados.
 
 ### Crear backup
 
-```
+```http
 POST /api/backup/create
 ```
 
@@ -425,7 +425,7 @@ POST /api/backup/create
 
 ### Restaurar backup
 
-```
+```http
 POST /api/backup/restore
 ```
 
@@ -471,7 +471,7 @@ Endpoints para consentimiento y eliminación de datos.
 
 ### Registrar consentimiento
 
-```
+```http
 POST /api/consent
 ```
 
@@ -506,7 +506,7 @@ POST /api/consent
 
 ### Eliminar shadow profile
 
-```
+```http
 DELETE /api/gdpr/delete-shadow
 ```
 
@@ -531,7 +531,7 @@ DELETE /api/gdpr/delete-shadow
 
 ### Eliminar cuenta completa
 
-```
+```http
 DELETE /api/gdpr/delete-account
 ```
 

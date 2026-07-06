@@ -553,7 +553,7 @@ Datadog.startSessionReplayRecording();
 
 ### Métricas objetivo (MVP)
 
-```
+```text
 Métrica              Target    Actual
 ─────────────────────────────────────
 First Contentful Paint      < 1.5s

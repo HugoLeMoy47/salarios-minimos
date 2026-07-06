@@ -218,7 +218,7 @@ if (item.userId !== session.user.id) {
 
 ### Nivel 4: Encriptación en tránsito
 
-```
+```text
 HTTP → HTTPS/TLS
 ```
 
@@ -226,15 +226,14 @@ HTTP → HTTPS/TLS
 
 ```typescript
 // src/lib/crypto.ts
-import CryptoJS from 'crypto-js';
+import { createCipheriv, createHash, randomBytes } from 'crypto';
 
-export function encryptData(data: any, key: string): string {
-  return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
-}
-
-export function decryptData(encrypted: string, key: string): any {
-  const as256 = CryptoJS.AES.decrypt(encrypted, key);
-  return JSON.parse(as256.toString(CryptoJS.enc.Utf8));
+export function encryptData(data: unknown, key: string): string {
+  const derivedKey = createHash('sha256').update(key).digest();
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', derivedKey, iv);
+  const ciphertext = Buffer.concat([cipher.update(JSON.stringify(data), 'utf8'), cipher.final()]);
+  return Buffer.concat([iv, cipher.getAuthTag(), ciphertext]).toString('base64');
 }
 ```
 
@@ -311,7 +310,7 @@ export async function POST(request: Request) {
 
 ### 1️⃣ Code review
 
-```
+```text
 Antes de merge a main:
 1. Mínimo 1 code review
 2. CI/CD tests pasan
@@ -387,9 +386,9 @@ export default limiter;
 openssl rand -hex 32
 # Salida: a1b2c3d4e5f6...
 
-# ENCRYPTION_KEY (16 hex)
-openssl rand -hex 16
-# Salida: 1a2b3c4d5e6f...
+# ENCRYPTION_KEY (32 hex)
+openssl rand -hex 32
+# Salida: a1b2c3d4e5f6...
 ```
 
 ### Almacenamiento seguro
@@ -424,7 +423,7 @@ git add .gitignore
 
 ### OAuth 2.0 + OpenID Connect
 
-```
+```text
 App browser → OAuth Provider (Google/Microsoft/Apple)
               ↓ (redirecciona con código)
           App backend
@@ -486,23 +485,10 @@ export const config = {
 
 ### Datos en reposo
 
-Implementación en `src/lib/crypto.ts`:
-
-```typescript
-import CryptoJS from 'crypto-js';
-
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
-
-// Para datos sensibles en BD (si aplica)
-export function encryptField(data: string): string {
-  return CryptoJS.AES.encrypt(data, ENCRYPTION_KEY).toString();
-}
-
-export function decryptField(encrypted: string): string {
-  const bytes = CryptoJS.AES.decrypt(encrypted, ENCRYPTION_KEY);
-  return bytes.toString(CryptoJS.enc.Utf8);
-}
-```
+Implementación en `src/lib/crypto.ts`: cifrado AES-256-GCM con el módulo `crypto` nativo de Node
+(sin dependencias externas). La clave se deriva vía SHA-256 a partir de `ENCRYPTION_KEY`, y cada
+backup usa un IV aleatorio de 12 bytes más un authentication tag de 16 bytes, lo que detecta
+manipulación del texto cifrado (a diferencia del AES-CBC sin autenticar usado antes).
 
 ### En tránsito
 
@@ -589,7 +575,7 @@ const events = await db.anonymizedEvent.findMany({
 
 ### Contacto de seguridad
 
-```
+```text
 Email: security@diasdesalario.com
 ```
 

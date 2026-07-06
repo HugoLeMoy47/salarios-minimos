@@ -107,10 +107,12 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 4. Ve a "Credenciales" → "Crear credencial" → "OAuth 2.0 ID de cliente"
 5. Selecciona "Aplicación web"
 6. Bajo "URIs de redirección autorizadas", añade:
-   ```
+
+   ```text
    http://localhost:3000
    http://localhost:3000/api/auth/callback/google
    ```
+
 7. Copia el **Client ID** y **Client Secret** a tu `.env.local`
 
 ### Microsoft Azure AD
@@ -121,9 +123,11 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 4. Nombre: "Días de Salario (Dev)"
 5. Selecciona "Cuentas en cualquier directorio organizacional y cuentas Microsoft personales"
 6. En "URI de redirección", selecciona "Web" y añade:
-   ```
+
+   ```text
    http://localhost:3000/api/auth/callback/azure-ad
    ```
+
 7. Ve a "Certificados y secretos" → "Nuevo secreto de cliente"
 8. Copia los valores a tu `.env.local`
 
@@ -357,7 +361,7 @@ git push origin feature/mi-feature
 
 ## 📊 Estructura de directorios clave
 
-```
+```text
 src/
 ├── app/
 │   ├── api/              # Routes que editar frecuentemente

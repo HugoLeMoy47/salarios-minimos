@@ -1,6 +1,7 @@
 declare module 'geohash' {
-  function encode(lat: number, lon: number, precision?: number): string;
-  function decode(hash: string): { latitude: number[]; longitude: number[] };
-  function neighbor(hash: string, direction: string): string;
-  function decode_bbox(hash: string): number[];
+  export const GeoHash: {
+    encodeGeoHash(latitude: number, longitude: number): string;
+    decodeGeoHash(hash: string): { latitude: number[]; longitude: number[] };
+    calculateAdjacent(srcHash: string, dir: string): string;
+  };
 }

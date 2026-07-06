@@ -2,7 +2,6 @@
  * Utilidades de geolocalización y geohashing para anonimización
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as geohash from 'geohash';
 import { logger } from './logger';
 
@@ -14,20 +13,7 @@ import { logger } from './logger';
  */
 export function coordinatesToGeohash6(latitude: number, longitude: number): string {
   try {
-    // la librería expone GeoHash.encodeGeoHash en Node
-     
-    const encodeFn: any =
-      typeof (geohash as any).encode === 'function'
-        ? (geohash as any).encode
-        : (geohash as any).GeoHash?.encodeGeoHash;
-
-    if (typeof encodeFn !== 'function') {
-      // fallback simple placeholder
-      return '';
-    }
-
-    const hash: string = encodeFn(latitude, longitude);
-    return hash.substring(0, 6);
+    return geohash.GeoHash.encodeGeoHash(latitude, longitude).substring(0, 6);
   } catch {
     return '';
   }

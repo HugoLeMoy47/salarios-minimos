@@ -27,16 +27,19 @@ Una aplicación web moderna que te ayuda a visualizar el costo real de las cosas
 ### Funcionalidades principales
 
 #### 🧘 Cámara de Meditación
+
 - **Activación automática**: Compras que superan el 10% de tu ingreso mensual entran automáticamente en período de meditación (72 horas).
 - **Cronómetro visual**: Muestra tiempo restante y progreso.
 - **Opciones**: Puedes cancelar la compra o esperar para comprarla.
 
 #### 📊 Resumen de Salud Financiera
+
 - **Indicadores en tiempo real**: Visualiza tu impacto en "días de vida" comprometidos, en evaluación y recuperados.
 - **Nudges inteligentes**: Alertas cuando evalúas comprometer mucho de tu ingreso mensual.
 - **Refuerzo positivo**: Celebración cuando cancelas compras impulsivas.
 
 #### 💳 Marketplace Inteligente
+
 - **Ofertas personalizadas**: Productos financieros con tasas preferenciales basadas en tu historial de autocontrol.
 - **Lead generation**: Al solicitar información, se registra tu "Score de Meditación" para las financieras.
 - **Gating por responsabilidad**: Mejores ofertas desbloqueadas al demostrar autocontrol financiero.
@@ -148,7 +151,7 @@ La aplicación estará disponible en `http://localhost:3000`
 
 > 🛑 **Validación automática**: el proyecto valida las variables de entorno al arrancar. Si falta alguna requerida, fallará inmediatamente en desarrollo/producción. En modo `test` la validación se omite para facilitar las pruebas.
 
-Crea un archivo `.env.local` basado en `.env.example`: 
+Crea un archivo `.env.local` basado en `.env.example`:
 
 ```dotenv
 # Base de datos
@@ -188,7 +191,7 @@ ENCRYPTION_KEY=your-encryption-key-change-in-production
 openssl rand -hex 32
 
 # Generar ENCRYPTION_KEY
-openssl rand -hex 16
+openssl rand -hex 32
 ```
 
 ## 🔐 Configurar OAuth
@@ -443,7 +446,7 @@ Los eventos se envían con los siguientes campos anonymados:
 
 ### Encriptación de backups
 
-Los backups se cifran con AES-256 antes de ser descargados. El cliente mantiene el control total de la clave.
+Los backups se cifran con AES-256-GCM (cifrado autenticado, vía el módulo `crypto` nativo de Node) antes de ser descargados. El cliente mantiene el control total de la clave.
 
 ### Consentimientos
 

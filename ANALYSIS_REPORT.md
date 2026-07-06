@@ -686,6 +686,7 @@ sin lenguaje especificado
 \```typescript
 con lenguaje especificado
 \```
+
 ````
 
 **Fix Automático**:
@@ -695,7 +696,7 @@ npm install -D markdownlint-cli fix-markdown-links
 
 # Fijar automáticamente
 markdownlint --fix CONTRIBUTING.md ARCHITECTURE.md API_ROUTES.md DEV_SETUP.md
-```
+````
 
 **Estimación**: 20-30 minutos  
 **Impacto**: Credibilidad +50%, UX de docs +100%
@@ -777,7 +778,7 @@ markdownlint --fix CONTRIBUTING.md ARCHITECTURE.md API_ROUTES.md DEV_SETUP.md
 
 **Objetivo**: Máximo ROI en mínimo tiempo
 
-```
+```text
 ┌─────────────────────────────────┐
 │ Sprint 1: Critical Issues       │
 ├─────────────────────────────────┤
@@ -806,7 +807,7 @@ markdownlint --fix CONTRIBUTING.md ARCHITECTURE.md API_ROUTES.md DEV_SETUP.md
 
 ### Sprint 2: Validación y Rate Limiting (5 horas) - SEMANA 2
 
-```
+```text
 ┌─────────────────────────────────┐
 │ Sprint 2: Security & Validation │
 ├─────────────────────────────────┤
@@ -831,7 +832,7 @@ markdownlint --fix CONTRIBUTING.md ARCHITECTURE.md API_ROUTES.md DEV_SETUP.md
 
 ### Sprint 3: Mejoras Estructurales (8 horas) - SEMANA 3
 
-```
+```text
 ┌─────────────────────────────────┐
 │ Sprint 3: Refactoring           │
 ├─────────────────────────────────┤
@@ -870,7 +871,7 @@ markdownlint --fix CONTRIBUTING.md ARCHITECTURE.md API_ROUTES.md DEV_SETUP.md
 
 ### Week 1: Foundation
 
-```
+```text
 Día 1-2: Markdown + TypeScript Defaults
          └─ Fix linting, basic types
 
@@ -883,7 +884,7 @@ Día 4: OAuth Validation + Cache Headers
 
 ### Week 2: Security
 
-```
+```text
 Día 1-2: Zod Schema + Validation
          └─ All API inputs validated
 
@@ -896,7 +897,7 @@ Día 5: Geolocation Resilience
 
 ### Week 3: Quality
 
-```
+```text
 Día 1-2: Prisma Refactor
          └─ Type-safe client
 
@@ -913,7 +914,7 @@ Día 5: Encriptación + TypeScript Strict
 
 ### Performance
 
-```
+```text
 Before                    After
 ─────────────────────────────────
 API Response:    250ms   → 50ms    (-80%)
@@ -923,7 +924,7 @@ Type Coverage:   60%     → 95%     (+35%)
 
 ### Reliability
 
-```
+```text
 Error Detection:  Runtime → Build-time
 Validation:       Manual  → Automated
 Error Handling:   Inconsistent → Consistent
@@ -931,7 +932,7 @@ Error Handling:   Inconsistent → Consistent
 
 ### Maintainability
 
-```
+```text
 Code Quality:    60/100  → 85/100
 Test Coverage:   45%     → 65%
 Documentation:   Good    → Excellent
@@ -963,3 +964,4 @@ Documentation:   Good    → Excellent
 ---
 
 **Contacto**: Para preguntas sobre priorización o estimaciones, revisar PERFORMANCE.md y TESTING.md
+````

@@ -3,11 +3,15 @@
  * Nota: Inicialización lazy-loaded mediante Proxy
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// Usamos any para evitar problemas con el paquete (@prisma/client) configurado.
-let cachedPrisma: any = null;
+import { PrismaClient } from '@/generated/prisma/client';
+// Adaptador de driver para SQLite. Si se migra a Postgres (p.ej. Supabase), sustituir
+// por @prisma/adapter-pg y actualizar el datasource provider en schema.prisma.
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { logger } from './logger';
 
-export function getPrismaClient(): any {
+let cachedPrisma: PrismaClient | null = null;
+
+export function getPrismaClient(): PrismaClient {
   if (cachedPrisma) {
     return cachedPrisma;
   }
@@ -17,17 +21,17 @@ export function getPrismaClient(): any {
   }
 
   try {
-    if (!process.env.DATABASE_URL) {
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
       throw new Error('DATABASE_URL environment variable is required');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaClient } = require('@prisma/client');
-
-    const globalForPrisma = global as unknown as { prisma?: any };
+    const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 
     if (!globalForPrisma.prisma) {
+      const adapter = new PrismaBetterSqlite3({ url: databaseUrl });
       globalForPrisma.prisma = new PrismaClient({
+        adapter,
         errorFormat: 'pretty',
       });
     }
@@ -36,21 +40,20 @@ export function getPrismaClient(): any {
 
     return cachedPrisma;
   } catch (error) {
-    console.error('Unable to instantiate Prisma Client. Make sure DATABASE_URL is set.', error);
+    logger.error({ err: error }, 'Unable to instantiate Prisma Client. Make sure DATABASE_URL is set.');
     throw error;
   }
 }
 
 // Lazy-loaded Prisma client via Proxy
-const prismaHandler: ProxyHandler<Record<string, unknown>> = {
+const prismaHandler: ProxyHandler<PrismaClient> = {
   get: (_target, prop) => {
     const client = getPrismaClient();
-    // Access via string key since `prop` may be symbol or string
-    return (client as unknown as Record<string, unknown>)[String(prop)];
+    return client[prop as keyof PrismaClient];
   },
 };
 
-const prisma = new Proxy({} as unknown as any, prismaHandler);
+const prisma = new Proxy({} as PrismaClient, prismaHandler);
 
 export { prisma };
 export default prisma;

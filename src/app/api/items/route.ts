@@ -6,6 +6,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { ItemStatus } from '@/generated/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { CreateItemSchema, UpdateItemSchema, parseAndValidate } from '@/lib/validation';
 import { withApiHandler } from '@/lib/api-handler';
@@ -73,18 +74,18 @@ export const POST = withApiHandler(async (request: NextRequest) => {
     return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
   }
 
-const { createItem } = await import('@/services/item.service');
+  const { createItem } = await import('@/services/item.service');
   const item = await createItem({
-        userId: user.id,
-        price,
-        description,
-        notes,
-        photoUrl,
-        latitude,
-        longitude,
-        geohash,
-        status: 'pending',
-      });
+    userId: user.id,
+    price,
+    description,
+    notes,
+    photoUrl,
+    latitude,
+    longitude,
+    geohash,
+    status: ItemStatus.PENDING,
+  });
 
   return NextResponse.json(item, { status: 201 });
 });

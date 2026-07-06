@@ -57,7 +57,7 @@ export type UpdateItemInput = z.infer<typeof UpdateItemSchema>;
  */
 
 export const LocalItemSchema = z.object({
-  id: IdSchema,
+  id: z.string().uuid('Invalid ID format'),
   price: PriceSchema,
   description: DescriptionSchema,
   notes: NotesSchema.optional(),
@@ -65,7 +65,9 @@ export const LocalItemSchema = z.object({
   latitude: LatitudeSchema.optional(),
   longitude: LongitudeSchema.optional(),
   geohash: GeohashSchema.optional(),
-  status: z.enum(['pending', 'purchased', 'not_purchased']),
+  status: z.enum(['pending', 'meditating', 'purchased', 'not_purchased', 'cancelled']),
+  meditationStartedAt: z.string().datetime().optional(),
+  meditationEndsAt: z.string().datetime().optional(),
   postponedUntil: z.string().datetime().optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -74,15 +76,48 @@ export const LocalItemSchema = z.object({
 export type LocalItem = z.infer<typeof LocalItemSchema>;
 
 /**
+ * Shadow Profile merge schema
+ */
+
+export const ShadowMergeSchema = z.object({
+  shadowUUID: z.string().uuid('Invalid shadow UUID format'),
+  localItems: z.array(LocalItemSchema),
+});
+
+export type ShadowMergeInput = z.infer<typeof ShadowMergeSchema>;
+
+export const UuidBodySchema = z.object({
+  uuid: z.string().uuid('Invalid UUID format'),
+});
+
+export const ShadowUuidBodySchema = z.object({
+  shadowUUID: z.string().uuid('Invalid shadow UUID format'),
+});
+
+/**
  * Consent schemas
  */
 
 export const ConsentSchema = z.object({
-  consentType: z.enum(['analytics', 'marketing', 'geolocation']),
-  value: z.boolean(),
+  type: z.enum(['notifications', 'geolocation', 'analytics']),
+  consent: z.boolean(),
+  userId: z.string().optional(),
 });
 
 export type ConsentInput = z.infer<typeof ConsentSchema>;
+
+/**
+ * Anonymized event schemas
+ */
+
+export const EventSchema = z.object({
+  eventType: z.enum(['item_created', 'item_purchased', 'item_not_purchased', 'item_postponed']),
+  salaryDaysBucket: z.enum(['0-0.9', '1-2.9', '3-6.9', '7+']).optional(),
+  geohash6: GeohashSchema,
+  timestamp15min: z.string().datetime().optional(),
+});
+
+export type EventInput = z.infer<typeof EventSchema>;
 
 /**
  * Backup schemas
@@ -94,6 +129,31 @@ export const BackupSchema = z.object({
 });
 
 export type BackupInput = z.infer<typeof BackupSchema>;
+
+export const BackupItemSchema = z.object({
+  price: PriceSchema,
+  description: DescriptionSchema,
+  notes: NotesSchema,
+  photoUrl: PhotoUrlSchema,
+  status: z.string().optional(),
+  postponedUntil: z.string().datetime().nullable().optional(),
+  createdAt: z.string().datetime(),
+});
+
+export const BackupDataSchema = z.object({
+  version: z.string(),
+  exportedAt: z.string(),
+  items: z.array(BackupItemSchema),
+  shadowProfile: z
+    .object({
+      uuid: z.string(),
+      mergedAt: z.string().datetime().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+});
+
+export type BackupData = z.infer<typeof BackupDataSchema>;
 
 /**
  * Query parameter schemas

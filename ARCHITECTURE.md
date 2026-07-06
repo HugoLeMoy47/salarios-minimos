@@ -4,7 +4,7 @@ Documentación técnica de la arquitectura de **Días de Salario**.
 
 ## 📊 Diagrama de arquitectura
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                     CAPA DE PRESENTACIÓN                     │
 │                      (Next.js Client)                        │
@@ -71,7 +71,7 @@ Documentación técnica de la arquitectura de **Días de Salario**.
 
 ### 1. Crear Item (Shadow Profile - Sin autenticación)
 
-```
+```text
 Usuario → UI (ItemForm) → Guardar en IndexedDB
                       ↓
                  POST /api/events
@@ -87,7 +87,7 @@ Usuario → UI (ItemForm) → Guardar en IndexedDB
 
 ### 2. Autenticación y Sincronización
 
-```
+```text
 Usuario → OAuth Provider → NextAuth
                       ↓
             Crear sesión JWT
@@ -107,12 +107,12 @@ Usuario → OAuth Provider → NextAuth
 
 ### 3. Backup y Restauración
 
-```
+```text
 Usuario → POST /api/backup/create
               ↓
     Serializar items a JSON
               ↓
-    Cifrar con AES-256
+    Cifrar con AES-256-GCM
               ↓
     Cliente descarga archivo
               ↓
@@ -121,7 +121,7 @@ Usuario → POST /api/backup/create
 
 **Restauración:**
 
-```
+```text
 Usuario → POST /api/backup/restore
               ↓
     Desencriptar JSON
@@ -269,19 +269,20 @@ if (item.userId !== session.user.id) {
 ### Encriptación
 
 ```typescript
-// AES-256-CBC para backups
-import CryptoJS from 'crypto-js';
+// AES-256-GCM (autenticado) con el módulo crypto nativo de Node
+import { createCipheriv, createHash, randomBytes } from 'crypto';
 
-const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), encryptionKey).toString();
-
-const decrypted = JSON.parse(
-  CryptoJS.AES.decrypt(encrypted, encryptionKey).toString(CryptoJS.enc.Utf8)
-);
+const key = createHash('sha256').update(encryptionKey).digest();
+const iv = randomBytes(12);
+const cipher = createCipheriv('aes-256-gcm', key, iv);
+const ciphertext = Buffer.concat([cipher.update(JSON.stringify(data), 'utf8'), cipher.final()]);
+const authTag = cipher.getAuthTag();
+const encrypted = Buffer.concat([iv, authTag, ciphertext]).toString('base64');
 ```
 
 ## 📦 Estructura de carpetas
 
-```
+```text
 src/
 ├── app/
 │   ├── api/                          # API Routes
@@ -345,7 +346,7 @@ src/
 
 ### 1. Request: GET /api/items
 
-```
+```text
 Browser
   ↓ Fetch con cookie de sesión
 Next.js Route Handler (/api/items/route.ts)
@@ -369,7 +370,7 @@ React re-render UI
 
 ### 2. Request: POST /api/items
 
-```
+```text
 Browser
   ↓ Fetch con body JSON
 Validar autenticación
@@ -426,7 +427,7 @@ Response con item creado
 
 ### Estrategia de testing
 
-```
+```text
                     Unit Tests          Integration Tests
                          │                     │
 Salary Calc Lib ─────────┤                     │
@@ -441,7 +442,7 @@ Crypto Lib ─────────────┤                      │
                          Real DB              │
 ```
 
-**Cobertura objetivo: 80%**
+#### Cobertura objetivo: 80%
 
 ### Ejemplo test
 
@@ -479,7 +480,6 @@ describe('Salary Calculator', () => {
 | zod            | 4.3.6   | Validación    |
 | idb-keyval     | 6.2.2   | IndexedDB     |
 | geohash        | 0.0.1   | Geohashing    |
-| crypto-js      | 4.2.0   | Cifrado       |
 
 ## 📈 Escalabilidad futura
 

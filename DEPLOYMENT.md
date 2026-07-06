@@ -81,7 +81,7 @@ En el dashboard de Vercel:
 1. Ve a "Settings" → "Environment Variables"
 2. Añade las siguientes variables:
 
-```
+```text
 NEXTAUTH_URL                    https://tu-dominio.com
 NEXTAUTH_SECRET                 (generar con: openssl rand -hex 32)
 
@@ -101,19 +101,19 @@ DATABASE_URL                    postgresql://user:pass@host/db
 # App
 NEXT_PUBLIC_MIN_SALARY_DAILY    241.56
 NEXT_PUBLIC_APP_URL             https://tu-dominio.com
-ENCRYPTION_KEY                  (generar con: openssl rand -hex 16)
+ENCRYPTION_KEY                  (generar con: openssl rand -hex 32)
 ```
 
 ### Paso 4: Configurar base de datos
 
-**Opción A: PostgreSQL en Vercel (Recomendado)**
+#### Opción A: PostgreSQL en Vercel (Recomendado)
 
 1. En dashboard de Vercel, ve a "Storage"
 2. Haz clic en "Connect Store" → "Create New" → "PostgreSQL"
 3. Sigue los pasos y copia la `DATABASE_URL`
 4. Pégala en Environment Variables
 
-**Opción B: Base de datos externa**
+#### Opción B: Base de datos externa
 
 Si usas una BD externa (AWS RDS, DigitalOcean, etc.):
 
@@ -162,7 +162,7 @@ Alternativa simple a Vercel.
 
 En "Variables", añade:
 
-```
+```text
 NEXTAUTH_URL              https://tu-proyecto.up.railway.app
 NEXTAUTH_SECRET           (generar)
 GOOGLE_CLIENT_ID          ...
@@ -214,7 +214,7 @@ heroku config:set GOOGLE_CLIENT_SECRET=...
 # ... etc
 ```
 
-### Paso 5: Deploy
+### Paso 5: Deploy a Heroku
 
 ```bash
 git push heroku main
@@ -348,7 +348,7 @@ MICROSOFT_CLIENT_ID=...
 MICROSOFT_CLIENT_SECRET=...
 
 # Encriptación
-ENCRYPTION_KEY=generated-with-openssl-rand-hex-16
+ENCRYPTION_KEY=generated-with-openssl-rand-hex-32
 ```
 
 ### Recomendadas (🟡 Config app)
@@ -479,14 +479,14 @@ jobs:
 
 ### Error: "DATABASE_URL is not set"
 
-```
+```text
 Database está configurada en .env.local pero no en el hosting.
 Solución: Agrega DATABASE_URL en variables de entorno del hosting.
 ```
 
 ### Error: "NextAuth session error"
 
-```
+```text
 NEXTAUTH_SECRET no es válido o URL no coincide.
 Solución:
 1. Regenera: openssl rand -hex 32
@@ -496,7 +496,7 @@ Solución:
 
 ### Build tarda mucho / timeout
 
-```
+```text
 Next.js build lento.
 Solución:
 1. Aumenta memoria de build en el hosting
@@ -506,7 +506,7 @@ Solución:
 
 ### Base de datos no responde en inicio
 
-```
+```text
 Migraciones no se ejecutaron.
 Solución:
 1. Ejecuta manualmente: npm run prisma:migrate
