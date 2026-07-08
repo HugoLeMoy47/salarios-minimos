@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, Typography, Box, Grid, Alert } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { LocalItem } from '@/lib/shadow-profile';
 import {
   calculateSalaryDays,
@@ -27,7 +28,6 @@ export function FinancialHealthSummary({ items, userConfig, victoryMessage }: Fi
 
   const totalPurchasedAmount = purchasedItems.reduce((sum, item) => sum + item.price, 0);
   const totalMeditatingAmount = meditatingItems.reduce((sum, item) => sum + item.price, 0);
-  const totalCancelledAmount = cancelledItems.reduce((sum, item) => sum + item.price, 0);
 
   const lifeCommittedDays = calculateSalaryDays(totalPurchasedAmount, zone);
   const evaluationPercentage = monthlyIncome > 0 ? calculateIncomePercentage(totalMeditatingAmount, monthlyIncome) : 0;
@@ -37,7 +37,7 @@ export function FinancialHealthSummary({ items, userConfig, victoryMessage }: Fi
   const showWarning = evaluationPercentage > 30;
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box component="section" aria-label="Resumen de salud financiera" sx={{ mb: 4 }}>
       {victoryMessage?.show && (
         <Alert severity="success" sx={{ mb: 2 }}>
           ¡Felicidades! Has recuperado {victoryMessage.days} días de tu vida al cancelar esa compra.
@@ -47,15 +47,15 @@ export function FinancialHealthSummary({ items, userConfig, victoryMessage }: Fi
       <Grid container spacing={2}>
         {/* Vida Comprometida */}
         <Grid item xs={12} sm={4}>
-          <Card sx={{ height: '100%', border: '1px solid #e1dfdd' }}>
+          <Card sx={{ height: '100%', border: '1px solid', borderColor: 'divider' }}>
             <CardContent sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#323130', mb: 1 }}>
+              <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
                 Vida Comprometida
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 700, color: '#d13438', mb: 0.5 }}>
+              <Typography variant="h4" component="p" sx={{ fontWeight: 700, color: 'error.main', mb: 0.5 }}>
                 {lifeCommittedDays.toFixed(1)}
               </Typography>
-              <Typography variant="body2" sx={{ color: '#605e5c' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 días de esfuerzo invertidos en compras
               </Typography>
             </CardContent>
@@ -64,19 +64,33 @@ export function FinancialHealthSummary({ items, userConfig, victoryMessage }: Fi
 
         {/* Esfuerzo en Evaluación */}
         <Grid item xs={12} sm={4}>
-          <Card sx={{ height: '100%', border: '1px solid #e1dfdd', bgcolor: showWarning ? '#fff3cd' : 'inherit' }}>
+          <Card
+            sx={(theme) => ({
+              height: '100%',
+              border: '1px solid',
+              borderColor: showWarning ? 'warning.main' : 'divider',
+              bgcolor: showWarning ? alpha(theme.palette.warning.main, 0.12) : 'background.paper',
+            })}
+          >
             <CardContent sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#323130', mb: 1 }}>
+              <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
                 Esfuerzo en Evaluación
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 700, color: showWarning ? '#856404' : '#0078d4', mb: 0.5 }}>
+              <Typography
+                variant="h4"
+                component="p"
+                sx={{ fontWeight: 700, color: showWarning ? 'warning.main' : 'primary.main', mb: 0.5 }}
+              >
                 {evaluationPercentage.toFixed(1)}%
               </Typography>
-              <Typography variant="body2" sx={{ color: '#605e5c' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 de tu ingreso mensual en meditación
               </Typography>
               {showWarning && (
-                <Typography variant="caption" sx={{ color: '#856404', fontWeight: 600, mt: 1, display: 'block' }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'warning.main', fontWeight: 600, mt: 1, display: 'block' }}
+                >
                   ¡Cuidado! Estás evaluando comprometer casi un tercio de tu mes laboral.
                 </Typography>
               )}
@@ -86,15 +100,15 @@ export function FinancialHealthSummary({ items, userConfig, victoryMessage }: Fi
 
         {/* Vida Recuperada */}
         <Grid item xs={12} sm={4}>
-          <Card sx={{ height: '100%', border: '1px solid #e1dfdd' }}>
+          <Card sx={{ height: '100%', border: '1px solid', borderColor: 'divider' }}>
             <CardContent sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#323130', mb: 1 }}>
+              <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
                 Vida Recuperada
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 700, color: '#107c10', mb: 0.5 }}>
+              <Typography variant="h4" component="p" sx={{ fontWeight: 700, color: 'success.main', mb: 0.5 }}>
                 {lifeRecoveredDays.toFixed(1)}
               </Typography>
-              <Typography variant="body2" sx={{ color: '#605e5c' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 días de descanso/vida recuperados
               </Typography>
             </CardContent>

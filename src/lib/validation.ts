@@ -98,10 +98,10 @@ export const ShadowUuidBodySchema = z.object({
  * Consent schemas
  */
 
+// userId NO se acepta del cliente: el endpoint lo deriva de la sesión del servidor.
 export const ConsentSchema = z.object({
   type: z.enum(['notifications', 'geolocation', 'analytics']),
   consent: z.boolean(),
-  userId: z.string().optional(),
 });
 
 export type ConsentInput = z.infer<typeof ConsentSchema>;

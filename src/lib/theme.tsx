@@ -52,6 +52,13 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
         mode,
         primary: { main: '#0078d4', contrastText: '#ffffff' },
         secondary: { main: '#2b88d8' },
+        // Tokens semánticos conscientes del modo: los componentes deben usar
+        // estos (success.main, error.main, divider, …) y NUNCA hex hardcodeado,
+        // para que el modo oscuro aplique en toda la app.
+        success: { main: mode === 'light' ? '#107c10' : '#6ccb5f' },
+        error: { main: mode === 'light' ? '#d13438' : '#f1707b' },
+        warning: { main: mode === 'light' ? '#856404' : '#ffd666' },
+        divider: mode === 'light' ? '#e1dfdd' : 'rgba(255, 255, 255, 0.12)',
         background: {
           default: mode === 'light' ? '#f3f2f1' : '#121214',
           paper: mode === 'light' ? '#ffffff' : '#1b1b1d',

@@ -116,7 +116,9 @@ const item = await db.item.findMany({
 
 - HTTPS/TLS obligatorio en producción
 - Secure cookies con `HttpOnly` y `Secure` flags
-- HSTS headers configurados
+- HSTS y demás headers de seguridad configurados en `next.config.ts` (`headers()`):
+  `Strict-Transport-Security`, `Content-Security-Policy`, `X-Frame-Options: DENY`,
+  `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`
 
 ```typescript
 // src/lib/auth.ts
@@ -147,8 +149,10 @@ const authOptions = {
 **Mitigación** (✅ Implementado):
 
 - React escapeea automáticamente
-- Content Security Policy headers
-- Sanitización de inputs
+- Content Security Policy configurada en `next.config.ts` (nota: `script-src` incluye
+  `'unsafe-inline'` por los scripts de hidratación de Next.js; endurecer con nonces
+  es una mejora futura)
+- Sanitización de inputs vía Zod en todas las rutas API
 
 ```typescript
 // ✅ React auto-escapeea
@@ -267,24 +271,25 @@ await db.anonymizedEvent.create({
 
 ### Consentimiento
 
+Implementado en `src/app/api/consent/route.ts`. Punto clave anti-falsificación: el
+`userId` NUNCA se acepta del body — si hay sesión activa se deriva de ella en el
+servidor; sin sesión, el consentimiento se registra como anónimo (`userId: null`).
+
 ```typescript
-// src/app/api/consent/route.ts
-export async function POST(request: Request) {
-  const { userId, type, value } = await request.json();
-
-  // Registrar consentimiento
-  const consent = await db.consentLog.create({
-    data: {
-      userId,
-      consentType: type,
-      value,
-      timestamp: new Date(),
-      ipAddress: request.headers.get('x-forwarded-for'),
-    },
+// El cliente solo envía { type, consent }; la identidad la resuelve el servidor.
+const session = await getServerSession(authOptions);
+let userId: string | null = null;
+if (session?.user?.email) {
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true },
   });
-
-  return NextResponse.json(consent);
+  userId = user?.id ?? null;
 }
+
+const consentLog = await prisma.consentLog.create({
+  data: { userId, type, consent, timestamp: new Date() },
+});
 ```
 
 ### Datos recopilados
@@ -360,20 +365,21 @@ return NextResponse.json({ error: error.message }, { status: 500 });
 
 ### 5️⃣ Rate limiting
 
+Implementado en `src/lib/rate-limit.ts`: limitador in-memory de ventana fija por IP,
+aplicado a los endpoints públicos (`/api/events`, `/api/consent`,
+`/api/gdpr/delete-shadow`, `DELETE /api/shadow-profile`).
+
 ```typescript
-// Implementar rate limiting en producción
-// Recomendado: usar middleware como rate-limit-redis
+// Al inicio de un route handler:
+import { rateLimit } from '@/lib/rate-limit';
 
-import rateLimit from 'express-rate-limit';
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 100, // 100 requests
-  message: 'Demasiadas solicitudes, intenta después',
-});
-
-export default limiter;
+const limited = rateLimit(request, { limit: 30, windowMs: 60_000, keyPrefix: 'events-post' });
+if (limited) return limited; // 429 con Retry-After
 ```
+
+**Limitación conocida**: el estado vive en memoria del proceso, así que en despliegues
+serverless multi-instancia el límite aplica por instancia. Si se necesita un límite
+global, migrar el backend a Redis (p.ej. Upstash) conservando la misma interfaz.
 
 ---
 
@@ -462,22 +468,22 @@ export const authOptions: NextAuthOptions = {
 
 ### Validación en cada request
 
+**Patrón real del proyecto**: no hay `middleware.ts` global — cada route handler
+protegido valida la sesión explícitamente al inicio. Este patrón está aplicado en
+todas las rutas que manejan datos de usuario (`/api/items`, `/api/backup`,
+`/api/shadow-profile` POST, `/api/gdpr/delete-account`).
+
 ```typescript
-// Middleware para verificar sesión
-export async function middleware(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/api/auth/signin', request.url));
-  }
-
-  return NextResponse.next();
+// Al inicio de cada handler protegido:
+const session = await getServerSession(authOptions);
+if (!session?.user?.email) {
+  return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
 }
-
-export const config = {
-  matcher: ['/dashboard/:path*', '/api/items/:path*'],
-};
 ```
+
+**Regla para rutas nuevas**: toda ruta que lea o escriba datos ligados a un usuario
+DEBE incluir este chequeo, y el `userId` SIEMPRE se deriva de la sesión del servidor
+— nunca del body del request (ver `/api/consent` como referencia).
 
 ---
 

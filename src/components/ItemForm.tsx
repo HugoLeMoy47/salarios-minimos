@@ -5,8 +5,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import {
   calculateSalaryDays,
   getSalaryDaysExplanation,
@@ -256,9 +254,10 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
             color="primary"
             disabled={requestingLocation || isLoading}
             title="Compartir ubicación (opcional)"
+            aria-label="Compartir ubicación (opcional)"
             sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
-            📍
+            <span aria-hidden="true">📍</span>
           </Button>
         </Box>
 

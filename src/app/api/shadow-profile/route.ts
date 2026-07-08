@@ -9,12 +9,19 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { ShadowMergeSchema, ShadowUuidBodySchema, parseAndValidate } from '@/lib/validation';
 import { withApiHandler } from '@/lib/api-handler';
+import { rateLimit } from '@/lib/rate-limit';
 import { logger } from '@/lib/logger';
 import { toPrismaItemStatus } from '@/services/item.service';
 
 /**
  * POST /api/shadow-profile/merge
- * Fusionar shadow profile local con usuario autenticado
+ * Fusionar shadow profile local con usuario autenticado.
+ *
+ * Idempotencia: si el shadow profile ya fue fusionado con este mismo usuario
+ * (mergedAt poblado), la operación no re-migra los items — evita duplicados
+ * cuando el cliente reintenta tras un fallo de red.
+ * Atomicidad: la creación del profile y la migración de items corren dentro
+ * de una transacción; un fallo a mitad de la migración revierte todo.
  */
 export const POST = withApiHandler(async (request: NextRequest) => {
   logger.debug('POST /api/shadow-profile called');
@@ -43,56 +50,76 @@ export const POST = withApiHandler(async (request: NextRequest) => {
     return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
   }
 
-  // Crear/actualizar el shadow profile en la base de datos
-  let shadowProfile = await prisma.shadowProfile.findUnique({
+  const existingProfile = await prisma.shadowProfile.findUnique({
     where: { uuid: shadowUUID },
   });
 
-  if (!shadowProfile) {
-    shadowProfile = await prisma.shadowProfile.create({
-      data: {
-        uuid: shadowUUID,
-        localDataJSON: JSON.stringify(localItems),
-        mergedWithUserId: user.id,
-        mergedAt: new Date(),
+  // Idempotencia: fusión ya realizada para este usuario → no repetir la migración.
+  if (existingProfile?.mergedAt && existingProfile.mergedWithUserId === user.id) {
+    return NextResponse.json(
+      {
+        message: 'Shadow profile ya estaba fusionado; no se migraron items nuevamente',
+        migratedCount: 0,
+        shadowProfile: existingProfile,
       },
-    });
-  } else {
-    shadowProfile = await prisma.shadowProfile.update({
-      where: { uuid: shadowUUID },
-      data: {
-        mergedWithUserId: user.id,
-        mergedAt: new Date(),
-      },
-    });
+      { status: 200 }
+    );
   }
 
-  // Migrar los items locales a la base de datos
-  const migratedItems = await Promise.all(
-    localItems.map((item) =>
-      prisma.item.create({
-        data: {
-          userId: user.id,
-          price: item.price,
-          description: item.description,
-          notes: item.notes,
-          photoUrl: item.photoUrl,
-          latitude: item.latitude,
-          longitude: item.longitude,
-          geohash: item.geohash,
-          status: toPrismaItemStatus(item.status),
-          postponedUntil: item.postponedUntil ? new Date(item.postponedUntil) : undefined,
-          createdAt: new Date(item.createdAt),
-          updatedAt: new Date(item.updatedAt),
-        },
-      })
-    )
-  );
+  // Un shadow profile fusionado con OTRO usuario no puede re-fusionarse.
+  if (existingProfile?.mergedWithUserId && existingProfile.mergedWithUserId !== user.id) {
+    return NextResponse.json(
+      { error: 'Este shadow profile ya fue fusionado con otra cuenta' },
+      { status: 409 }
+    );
+  }
+
+  const { shadowProfile, migratedCount } = await prisma.$transaction(async (tx) => {
+    const profile = existingProfile
+      ? await tx.shadowProfile.update({
+          where: { uuid: shadowUUID },
+          data: {
+            mergedWithUserId: user.id,
+            mergedAt: new Date(),
+          },
+        })
+      : await tx.shadowProfile.create({
+          data: {
+            uuid: shadowUUID,
+            localDataJSON: JSON.stringify(localItems),
+            mergedWithUserId: user.id,
+            mergedAt: new Date(),
+          },
+        });
+
+    const migratedItems = await Promise.all(
+      localItems.map((item) =>
+        tx.item.create({
+          data: {
+            userId: user.id,
+            price: item.price,
+            description: item.description,
+            notes: item.notes,
+            photoUrl: item.photoUrl,
+            latitude: item.latitude,
+            longitude: item.longitude,
+            geohash: item.geohash,
+            status: toPrismaItemStatus(item.status),
+            postponedUntil: item.postponedUntil ? new Date(item.postponedUntil) : undefined,
+            createdAt: new Date(item.createdAt),
+            updatedAt: new Date(item.updatedAt),
+          },
+        })
+      )
+    );
+
+    return { shadowProfile: profile, migratedCount: migratedItems.length };
+  });
 
   return NextResponse.json(
     {
       message: 'Shadow profile fusionado exitosamente',
-      migratedCount: migratedItems.length,
+      migratedCount,
       shadowProfile,
     },
     { status: 200 }
@@ -105,6 +132,11 @@ export const POST = withApiHandler(async (request: NextRequest) => {
  */
 export const DELETE = withApiHandler(async (request: NextRequest) => {
   logger.debug('DELETE /api/shadow-profile called');
+
+  // Endpoint público y destructivo: límite estricto para frenar barridos de UUIDs.
+  const limited = rateLimit(request, { limit: 5, windowMs: 60_000, keyPrefix: 'shadow-delete' });
+  if (limited) return limited;
+
   const body = await request.json();
   const result = parseAndValidate(ShadowUuidBodySchema, body);
 

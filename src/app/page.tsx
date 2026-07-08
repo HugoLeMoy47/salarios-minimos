@@ -89,25 +89,37 @@ export default function Home() {
   const tabIndex = ['pendientes', 'meditando', 'compradas', 'no_compradas'].indexOf(activeTab);
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f3f2f1' }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
       {/* Main Content */}
       <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
+        {/* Encabezado principal de la página (accesibilidad: navegación por h1) */}
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ fontWeight: 700, mb: 1 }}
+        >
+          Calculadora de días de salario
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+          Descubre cuántos días de trabajo cuesta lo que deseas comprar.
+        </Typography>
+
         {/* Auth Section */}
         <Box
           sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3, gap: 2 }}
         >
           {status === 'loading' && (
-            <Typography variant="body2" sx={{ color: '#605e5c' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Cargando...
             </Typography>
           )}
           {session ? (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Box>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: '#323130' }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
                   {session.user?.name}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#605e5c' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                   Autenticado
                 </Typography>
               </Box>
@@ -146,10 +158,7 @@ export default function Home() {
 
         {/* Error Alert */}
         {error && (
-          <Alert
-            severity="error"
-            sx={{ mb: 4, bgcolor: '#fde7e7', color: '#942911', border: '1px solid #fed0d0' }}
-          >
+          <Alert severity="error" sx={{ mb: 4 }}>
             <Typography variant="body2">
               <strong>Error:</strong> {error}
             </Typography>
@@ -160,7 +169,7 @@ export default function Home() {
         {(!userConfig.zone || !userConfig.monthlyIncome) && (
           <Alert
             severity="info"
-            sx={{ mb: 4, bgcolor: '#e7f3ff', color: '#0f3c5a', border: '1px solid #c7e4f7' }}
+            sx={{ mb: 4 }}
             action={
               <Button
                 component={Link}
@@ -183,23 +192,23 @@ export default function Home() {
         <Card sx={{ boxShadow: '0 1px 2px rgba(16,16,16,0.04)' }}>
           <CardContent>
             {/* Tabs */}
-            <Box sx={{ borderBottom: '1px solid #e1dfdd', mb: 3 }}>
+            <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', mb: 3 }}>
               <Tabs
                 value={tabIndex}
                 onChange={handleTabChange}
-                aria-label="filter tabs"
+                aria-label="Filtrar artículos por estado"
                 sx={{
                   '& .MuiTab-root': {
                     textTransform: 'none',
                     fontSize: '0.95rem',
                     fontWeight: 500,
-                    color: '#605e5c',
+                    color: 'text.secondary',
                     '&.Mui-selected': {
-                      color: '#0078d4',
+                      color: 'primary.main',
                     },
                   },
                   '& .MuiTabs-indicator': {
-                    backgroundColor: '#0078d4',
+                    backgroundColor: 'primary.main',
                   },
                 }}
               >
@@ -213,7 +222,7 @@ export default function Home() {
             {/* Items List or Empty State */}
             {filteredItems.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
-                <Typography variant="h6" sx={{ color: '#605e5c', mb: 1 }}>
+                <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 }}>
                   {activeTab === 'pendientes' && '¡Agrega un artículo para comenzar!'}
                   {activeTab === 'meditando' && 'Sin artículos en meditación.'}
                   {activeTab === 'compradas' && 'Sin artículos comprados aún.'}
@@ -229,16 +238,16 @@ export default function Home() {
                         <Grid item xs={12} sm={8}>
                           <Typography
                             variant="h6"
-                            sx={{ fontWeight: 600, color: '#323130', mb: 0.5 }}
+                            sx={{ fontWeight: 600, color: 'text.primary', mb: 0.5 }}
                           >
                             {item.description}
                           </Typography>
                           {item.notes && (
-                            <Typography variant="body2" sx={{ color: '#605e5c', mb: 1 }}>
+                            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
                               📝 {item.notes}
                             </Typography>
                           )}
-                          <Typography variant="caption" sx={{ color: '#707070' }}>
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                             📅 {new Date(item.createdAt).toLocaleDateString('es-MX')}
                           </Typography>
                         </Grid>
@@ -248,13 +257,13 @@ export default function Home() {
                             variant="h5"
                             sx={{
                               fontWeight: 700,
-                              color: '#0078d4',
+                              color: 'primary.main',
                               mb: 0.5,
                             }}
                           >
                             ${item.price.toFixed(2)}
                           </Typography>
-                          <Typography variant="body2" sx={{ color: '#605e5c' }}>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                             {calculateSalaryDays(item.price, (userConfig.zone as 'general' | 'frontera') || 'general')} días de salario
                           </Typography>
                         </Grid>
@@ -273,24 +282,16 @@ export default function Home() {
                           <Button
                             onClick={() => handleItemStatusChange(item.id, 'purchased')}
                             variant="contained"
-                            sx={{
-                              backgroundColor: '#107c10',
-                              '&:hover': { backgroundColor: '#0b5f0b' },
-                              flex: 1,
-                              textTransform: 'none',
-                            }}
+                            color="success"
+                            sx={{ flex: 1, textTransform: 'none' }}
                           >
                             ✅ Lo compré
                           </Button>
                           <Button
                             onClick={() => handleItemStatusChange(item.id, 'cancelled')}
                             variant="contained"
-                            sx={{
-                              backgroundColor: '#d13438',
-                              '&:hover': { backgroundColor: '#a4373a' },
-                              flex: 1,
-                              textTransform: 'none',
-                            }}
+                            color="error"
+                            sx={{ flex: 1, textTransform: 'none' }}
                           >
                             ❌ No lo compré
                           </Button>
@@ -307,7 +308,7 @@ export default function Home() {
                               handleItemStatusChange(item.id, 'pending');
                             }}
                           />
-                          <Typography variant="body2" sx={{ mt: 1, color: '#605e5c' }}>
+                          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
                             Tu &apos;yo del futuro&apos; está evaluando si esto vale{' '}
                             {calculateSalaryDays(item.price, (userConfig.zone as 'general' | 'frontera') || 'general')} días de trabajo.
                           </Typography>
@@ -319,19 +320,15 @@ export default function Home() {
                               flexDirection: { xs: 'column', sm: 'row' },
                             }}
                           >
+                            {/* Mientras el item esté en "meditando" la compra está bloqueada;
+                                al completarse las 72h, MeditationTimer lo regresa a pendientes
+                                automáticamente, donde sí se puede marcar como comprado. */}
                             <Button
-                              onClick={() => handleItemStatusChange(item.id, 'purchased')}
                               variant="contained"
-                              disabled={item.meditationEndsAt ? new Date(item.meditationEndsAt).getTime() > Date.now() : true}
-                              sx={{
-                                backgroundColor: item.meditationEndsAt && new Date(item.meditationEndsAt).getTime() <= Date.now() ? '#107c10' : '#cccccc',
-                                '&:hover': item.meditationEndsAt && new Date(item.meditationEndsAt).getTime() <= Date.now() ? { backgroundColor: '#0b5f0b' } : {},
-                                '&:disabled': { backgroundColor: '#e0e0e0' },
-                                flex: 1,
-                                textTransform: 'none',
-                              }}
+                              disabled
+                              sx={{ flex: 1, textTransform: 'none' }}
                             >
-                              {item.meditationEndsAt && new Date(item.meditationEndsAt).getTime() <= Date.now() ? '✅ Marcar como comprado' : '⏳ Bloqueado hasta completar meditación'}
+                              ⏳ Bloqueado hasta completar meditación
                             </Button>
                             <Button
                               onClick={() => handleItemStatusChange(item.id, 'cancelled')}
@@ -350,7 +347,7 @@ export default function Home() {
                     </Box>
 
                     {idx < filteredItems.length - 1 && (
-                      <Box sx={{ height: '1px', bgcolor: '#e1dfdd' }} />
+                      <Box sx={{ height: '1px', bgcolor: 'divider' }} />
                     )}
                   </React.Fragment>
                 ))}
@@ -361,16 +358,7 @@ export default function Home() {
 
         {/* Shadow Profile Info */}
         {!session && (
-          <Alert
-            severity="info"
-            sx={{
-              mt: 4,
-              bgcolor: '#eff6fc',
-              color: '#0078d4',
-              border: '1px solid #b4d6f5',
-              '& .MuiAlert-icon': { color: '#0078d4' },
-            }}
-          >
+          <Alert severity="info" sx={{ mt: 4 }}>
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
               💡 Datos locales
             </Typography>
@@ -382,7 +370,8 @@ export default function Home() {
               onClick={() => signIn()}
               variant="text"
               size="small"
-              sx={{ color: '#0078d4', textTransform: 'none', fontWeight: 600 }}
+              color="primary"
+              sx={{ textTransform: 'none', fontWeight: 600 }}
             >
               Iniciar sesión para sincronizar
             </Button>
@@ -401,8 +390,9 @@ export default function Home() {
       <Box
         component="footer"
         sx={{
-          bgcolor: '#ffffff',
-          borderTop: '1px solid #e1dfdd',
+          bgcolor: 'background.paper',
+          borderTop: '1px solid',
+          borderColor: 'divider',
           mt: 'auto',
           py: 3,
         }}
@@ -413,7 +403,7 @@ export default function Home() {
             sx={{
               display: 'block',
               textAlign: 'center',
-              color: '#605e5c',
+              color: 'text.secondary',
             }}
           >
             MVP &ldquo;Días de Salario&rdquo; © 2026 • Privacidad · Ayuda · Contacto

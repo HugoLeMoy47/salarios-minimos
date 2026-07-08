@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { EventSchema, parseAndValidate } from '@/lib/validation';
 import { withApiHandler } from '@/lib/api-handler';
+import { rateLimit } from '@/lib/rate-limit';
 import { logger } from '@/lib/logger';
 
 /**
@@ -19,6 +20,10 @@ import { logger } from '@/lib/logger';
  */
 export const POST = withApiHandler(async (request: NextRequest) => {
   logger.debug('POST /api/events called');
+
+  const limited = rateLimit(request, { limit: 30, windowMs: 60_000, keyPrefix: 'events-post' });
+  if (limited) return limited;
+
   const body = await request.json();
   const result = parseAndValidate(EventSchema, body);
 
@@ -45,12 +50,26 @@ export const POST = withApiHandler(async (request: NextRequest) => {
 });
 
 /**
- * GET /api/events/stats - Obtener estadísticas agregadas (admin only)
- * Podría requerir autenticación de admin en el futuro
+ * GET /api/events - Estadísticas agregadas (solo administración)
+ * Protegido con API key: requiere el header `x-admin-key` igual a ADMIN_API_KEY.
+ * Si ADMIN_API_KEY no está configurada, el endpoint responde 503 (cerrado por defecto).
  */
-export const GET = withApiHandler(async () => {
+export const GET = withApiHandler(async (request: NextRequest) => {
   logger.debug('GET /api/events called');
-  // Para MVP, retornar estadísticas básicas (sin protección de admin)
+
+  const limited = rateLimit(request, { limit: 10, windowMs: 60_000, keyPrefix: 'events-get' });
+  if (limited) return limited;
+
+  const adminKey = process.env.ADMIN_API_KEY;
+  if (!adminKey) {
+    logger.warn('GET /api/events rechazado: ADMIN_API_KEY no configurada');
+    return NextResponse.json({ error: 'Endpoint no disponible' }, { status: 503 });
+  }
+
+  if (request.headers.get('x-admin-key') !== adminKey) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  }
+
   const last7Days = new Date();
   last7Days.setDate(last7Days.getDate() - 7);
 

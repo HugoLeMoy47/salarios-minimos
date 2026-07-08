@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
-import { retry } from '@/lib/retry';
 import { ItemStatus, type Item, type Prisma } from '@/generated/prisma/client';
+
+// Nota de resiliencia: el cliente `prisma` ya reintenta con backoff exponencial
+// toda operación (ver src/lib/prisma.ts), así que aquí no se envuelve en retry().
 
 // Simple cache with 60s TTL to avoid repeated DB hits for the same user
 const userItemsCache = new Map<string, { timestamp: number; data: Item[] }>();
@@ -11,30 +13,31 @@ export async function findItemsByUser(userId: string): Promise<Item[]> {
   if (cached && now - cached.timestamp < 60_000) {
     return cached.data;
   }
-  const items = await retry(() =>
-    prisma.item.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } })
-  );
+  const items = await prisma.item.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+  });
   userItemsCache.set(userId, { timestamp: now, data: items });
   return items;
 }
 
 export async function createItem(data: Prisma.ItemUncheckedCreateInput): Promise<Item> {
-  return retry(() => prisma.item.create({ data }));
+  return prisma.item.create({ data });
 }
 
 export async function updateItem(
   id: string,
   data: Prisma.ItemUncheckedUpdateInput
 ): Promise<Item> {
-  return retry(() => prisma.item.update({ where: { id }, data }));
+  return prisma.item.update({ where: { id }, data });
 }
 
 export async function findItemById(id: string): Promise<Item | null> {
-  return retry(() => prisma.item.findUnique({ where: { id } }));
+  return prisma.item.findUnique({ where: { id } });
 }
 
 export async function deleteItem(id: string): Promise<Item> {
-  return retry(() => prisma.item.delete({ where: { id } }));
+  return prisma.item.delete({ where: { id } });
 }
 
 /**

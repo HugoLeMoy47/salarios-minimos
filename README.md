@@ -182,6 +182,10 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Seguridad
 ENCRYPTION_KEY=your-encryption-key-change-in-production
+
+# Opcional: habilita GET /api/events (estadísticas agregadas, vía header x-admin-key).
+# Si no se define, ese endpoint responde 503 (cerrado por defecto).
+ADMIN_API_KEY=your-admin-api-key
 ```
 
 ### Generar secrets

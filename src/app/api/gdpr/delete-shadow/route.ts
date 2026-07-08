@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { UuidBodySchema, parseAndValidate } from '@/lib/validation';
 import { withApiHandler } from '@/lib/api-handler';
+import { rateLimit } from '@/lib/rate-limit';
 import { logger } from '@/lib/logger';
 
 /**
@@ -15,6 +16,11 @@ import { logger } from '@/lib/logger';
  */
 export const DELETE = withApiHandler(async (request: NextRequest) => {
   logger.debug('DELETE /api/gdpr/delete-shadow called');
+
+  // Endpoint público y destructivo: límite estricto para frenar barridos de UUIDs.
+  const limited = rateLimit(request, { limit: 5, windowMs: 60_000, keyPrefix: 'delete-shadow' });
+  if (limited) return limited;
+
   const body = await request.json();
   const result = parseAndValidate(UuidBodySchema, body);
 

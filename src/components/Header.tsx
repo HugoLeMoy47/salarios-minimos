@@ -13,7 +13,7 @@ export default function Header() {
       position="sticky"
       color="inherit"
       elevation={0}
-      sx={{ borderBottom: '1px solid rgba(16,16,16,0.04)', backgroundColor: 'transparent' }}
+      sx={{ borderBottom: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper' }}
     >
       <Container maxWidth="lg">
         <Toolbar
