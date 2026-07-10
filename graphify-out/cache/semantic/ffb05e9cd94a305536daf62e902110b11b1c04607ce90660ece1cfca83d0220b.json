@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "build_output_auth_session_type_error",
+      "label": "Build Failure: session.user.id Type Error in auth.ts",
+      "file_type": "document",
+      "source_file": "build-output.txt",
+      "source_location": "src/lib/auth.ts:50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Captured Next.js 16.1.6 build log: compilation succeeds but TypeScript fails \u2014 Property 'id' does not exist on session.user's default type when the session callback assigns session.user.id = token.sub, indicating a missing next-auth module augmentation for the custom session shape."
+    }
+  ],
+  "edges": [
+    {
+      "source": "build_output_auth_session_type_error",
+      "target": "architecture_jwt_auth",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "build-output.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "build_output_auth_session_type_error",
+      "target": "security_doc",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "build-output.txt",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

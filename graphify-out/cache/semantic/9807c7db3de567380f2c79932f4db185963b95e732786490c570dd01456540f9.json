@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": "api_routes_doc",
+      "label": "API Routes Documentation",
+      "file_type": "document",
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "api_routes_items_api",
+      "label": "Items CRUD API",
+      "file_type": "concept",
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Authenticated CRUD over /api/items with Zod validation and ownership checks (401 without session, 403 when not owner)."
+    },
+    {
+      "id": "api_routes_shadow_profile_merge",
+      "label": "Shadow Profile Merge Endpoint",
+      "file_type": "concept",
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "POST /api/shadow-profile/merge migrates local (anonymous) items into the authenticated user's DB and marks the shadow as merged \u2014 the core anonymous-to-authenticated upgrade path."
+    },
+    {
+      "id": "api_routes_events_api",
+      "label": "Anonymized Events API",
+      "file_type": "concept",
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "POST /api/events requires no auth by design: events carry only eventType, salaryDaysBucket ranges, 6-char geohash (~610km) and a 15-minute-truncated timestamp so no PII is ever transmitted."
+    },
+    {
+      "id": "api_routes_backup_api",
+      "label": "Encrypted Backup API",
+      "file_type": "concept",
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "POST /api/backup/create returns an encrypted JSON blob the browser downloads; the user manually uploads it to Google Drive, keeping full control of the encryption key. Restore decrypts, validates structure, and inserts items."
+    },
+    {
+      "id": "api_routes_gdpr_api",
+      "label": "GDPR Consent and Deletion API",
+      "file_type": "concept",
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "POST /api/consent (anonymous allowed), DELETE /api/gdpr/delete-shadow (by UUID, no auth) and DELETE /api/gdpr/delete-account (authenticated, requires confirm:true) implement right-to-be-forgotten and consent registration."
+    }
+  ],
+  "edges": [
+    {
+      "source": "api_routes_doc",
+      "target": "api_routes_items_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_doc",
+      "target": "api_routes_shadow_profile_merge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_doc",
+      "target": "api_routes_events_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_doc",
+      "target": "api_routes_backup_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_doc",
+      "target": "api_routes_gdpr_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_shadow_profile_merge",
+      "target": "architecture_shadow_profile",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_events_api",
+      "target": "architecture_anonymized_events",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_backup_api",
+      "target": "architecture_backup_encryption",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "api_routes_gdpr_api",
+      "target": "security_consent_anti_forgery",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "API_ROUTES.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

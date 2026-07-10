@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {
+      "id": "deployment_doc",
+      "label": "Deployment Guide",
+      "file_type": "document",
+      "source_file": "DEPLOYMENT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Covers Vercel (recommended, PostgreSQL storage), Railway, Heroku and Docker deployments; documents critical env vars (NEXTAUTH_SECRET, DATABASE_URL, ENCRYPTION_KEY, OAuth credentials) and a pre-deployment checklist."
+    }
+  ],
+  "edges": [
+    {
+      "source": "deployment_doc",
+      "target": "dev_setup_doc",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "DEPLOYMENT.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

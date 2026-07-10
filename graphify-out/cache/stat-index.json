@@ -1,0 +1,551 @@
+{
+  "D:\\GitHub\\salarios-minimos\\.claude\\settings.local.json": {
+    "size": 1476,
+    "mtime_ns": 1783523518396182200,
+    "word_count": 86,
+    "hash": "4a934967d51cbeb958ce64e2fe146a0b4387fd415fc3002951e542a7c71cefa3"
+  },
+  "D:\\GitHub\\salarios-minimos\\.github\\workflows\\ci.yml": {
+    "size": 1028,
+    "mtime_ns": 1783374351572820100,
+    "word_count": 99,
+    "hash": "0b8656c47cbf5180ed7b7bca6133175027d63df469913af7119d5ff51426c416"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\applypatch-msg": {
+    "size": 39,
+    "mtime_ns": 1783535156190158900,
+    "word_count": 5,
+    "hash": "6a9064e8fb13487a3a621e0dbb7bd8c82245b9c904b0c2dbcf3ce5fe55506b9c"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\commit-msg": {
+    "size": 39,
+    "mtime_ns": 1783535156161985200,
+    "word_count": 5,
+    "hash": "0bff8d003cbfd9b75abbe94b6017890688fb016d9cd9e4474bba08706c61d3d0"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\h": {
+    "size": 551,
+    "mtime_ns": 1783376350898347300,
+    "word_count": 95,
+    "hash": "f99a890a7c2de1e26a154549cb667ee9a884327e25ddbd6380ab23a986570ffc"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\husky.sh": {
+    "size": 160,
+    "mtime_ns": 1783535156324462400,
+    "word_count": 24,
+    "hash": "6db0aa99aece6ebd17bbc27c5e5287a462fb39cc4a2ca3a82a6277c166bdb3a0"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\post-applypatch": {
+    "size": 39,
+    "mtime_ns": 1783535156218793400,
+    "word_count": 5,
+    "hash": "678bc23efa73439ac107fddd35e640e583d68b45ab0c119be3ba50a81553e99d"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\post-checkout": {
+    "size": 39,
+    "mtime_ns": 1783535156271101700,
+    "word_count": 5,
+    "hash": "f5104aea4b990fe94fe2eacb0323c2128b3f66f11d3fc388538530dada2db808"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\post-commit": {
+    "size": 39,
+    "mtime_ns": 1783535156175737600,
+    "word_count": 5,
+    "hash": "20dc01bba5753874a3746d18250b5b5d71aebbfbdfda5305a6dfc2541adb209b"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\post-merge": {
+    "size": 39,
+    "mtime_ns": 1783535156284768300,
+    "word_count": 5,
+    "hash": "9dd56caa8fa28b5494661ce7c97d756013f200ac4e60f619671f4d4eca46faa6"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\post-rewrite": {
+    "size": 39,
+    "mtime_ns": 1783535156245668100,
+    "word_count": 5,
+    "hash": "3aa066773301fd07106a7926663f6ca3931ebf19bcacce7e156ead4e8446121a"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\pre-applypatch": {
+    "size": 39,
+    "mtime_ns": 1783535156205510700,
+    "word_count": 5,
+    "hash": "24332da3a5839bca3276206674c0c6119f653c3dd2b01e2f5b37194a02d185f8"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\pre-auto-gc": {
+    "size": 39,
+    "mtime_ns": 1783535156310780300,
+    "word_count": 5,
+    "hash": "d0038c1f6c4208a560ea4669eefc633b8460563cc29fcbc3c0d6c44309916f62"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\pre-commit": {
+    "size": 39,
+    "mtime_ns": 1783535156119030500,
+    "word_count": 5,
+    "hash": "d0b0ee2878cb9efe03dfbf9327e5038d7a10eabd56ad9b1321c45eff1447e98d"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\pre-merge-commit": {
+    "size": 39,
+    "mtime_ns": 1783535156133768700,
+    "word_count": 5,
+    "hash": "20798fb4a9d9b6f3593cdd371ca98fa15a5d57c1bf9bfc489039b5595b7028ff"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\pre-push": {
+    "size": 39,
+    "mtime_ns": 1783535156298313400,
+    "word_count": 5,
+    "hash": "dd427fbe45aac0d22b4b75cd3738b4f19bb6b9203413d57e83eb402c992e636d"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\pre-rebase": {
+    "size": 39,
+    "mtime_ns": 1783535156232278000,
+    "word_count": 5,
+    "hash": "c94f2d13aabe67bf5766093bbd03c9b9e5580deadc230f73ad6421b3ec0bf290"
+  },
+  "D:\\GitHub\\salarios-minimos\\.husky\\_\\prepare-commit-msg": {
+    "size": 39,
+    "mtime_ns": 1783535156148329900,
+    "word_count": 5,
+    "hash": "d571f11fd4274692937568cb770a19c830c585c6cef79f550d5c27340871a18f"
+  },
+  "D:\\GitHub\\salarios-minimos\\.lintstagedrc.json": {
+    "size": 106,
+    "mtime_ns": 1783374351613189800,
+    "word_count": 12,
+    "hash": "4942c21d14e2bd6893f7cf959c495e3ebfac1210ef7207c66d1fcacbe84589a9"
+  },
+  "D:\\GitHub\\salarios-minimos\\.markdownlint.json": {
+    "size": 202,
+    "mtime_ns": 1783374351626403600,
+    "word_count": 23,
+    "hash": "2043f99c97bc2c57aa343ade261ad306e35262636190e7cea9b611bccc97eed4"
+  },
+  "D:\\GitHub\\salarios-minimos\\ANALYSIS_REPORT.md": {
+    "size": 24133,
+    "mtime_ns": 1783380044943422200,
+    "word_count": 2914,
+    "hash": "ce13adf4e400bc03e9cc7876cb17edce846eb9df4dda84230a517b02c93a3786"
+  },
+  "D:\\GitHub\\salarios-minimos\\API_ROUTES.md": {
+    "size": 11852,
+    "mtime_ns": 1783380045132983500,
+    "word_count": 1424,
+    "hash": "9807c7db3de567380f2c79932f4db185963b95e732786490c570dd01456540f9"
+  },
+  "D:\\GitHub\\salarios-minimos\\ARCHITECTURE.md": {
+    "size": 18855,
+    "mtime_ns": 1783380045241859300,
+    "word_count": 1658,
+    "hash": "53e16db0c5d65182ddd965979ed5ff5a294b7e3b1fe57a4e17983ab331436022"
+  },
+  "D:\\GitHub\\salarios-minimos\\CONTRIBUTING.md": {
+    "size": 7017,
+    "mtime_ns": 1783380045328095200,
+    "word_count": 1015,
+    "hash": "31990ea8b7b3d236ed2a3cca162e9051529479c9902c11b4f1448a12cdb1b78e"
+  },
+  "D:\\GitHub\\salarios-minimos\\DEPLOYMENT.md": {
+    "size": 10913,
+    "mtime_ns": 1783380045463323200,
+    "word_count": 1409,
+    "hash": "aae70daa329c03e52331d85b11020080922717cd3767c099399b2cbfa5f73333"
+  },
+  "D:\\GitHub\\salarios-minimos\\DEV_SETUP.md": {
+    "size": 9235,
+    "mtime_ns": 1783380045511127400,
+    "word_count": 1131,
+    "hash": "026a555d04975c16e6f15aaa8913f097fbbfa983bd00b130bac0916f405890ce"
+  },
+  "D:\\GitHub\\salarios-minimos\\PERFORMANCE.md": {
+    "size": 13528,
+    "mtime_ns": 1783380045630961000,
+    "word_count": 1755,
+    "hash": "8ab6b6b5884a6dfea9aa1383178a18dca857d8deac33c4cb1c118e5f70a7b400"
+  },
+  "D:\\GitHub\\salarios-minimos\\README.md": {
+    "size": 18141,
+    "mtime_ns": 1783525300645897200,
+    "word_count": 2398,
+    "hash": "9ce2451aad0ab5cad499ec57a46708b6e204388ec7310705d9bb67872df123f1"
+  },
+  "D:\\GitHub\\salarios-minimos\\SECURITY.md": {
+    "size": 15968,
+    "mtime_ns": 1783525278908105800,
+    "word_count": 2069,
+    "hash": "60b403ca795d18b6fe6c341f3490e81abce43f369d37a7a0088b7d43e1354efe"
+  },
+  "D:\\GitHub\\salarios-minimos\\SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md": {
+    "size": 33305,
+    "mtime_ns": 1783526241301843300,
+    "word_count": 4558,
+    "hash": "e47b2322ab15b029af97cf24de3f6b673ce5ba95a9494a42171401125c80f13c"
+  },
+  "D:\\GitHub\\salarios-minimos\\TESTING.md": {
+    "size": 14214,
+    "mtime_ns": 1783380046003370200,
+    "word_count": 1611,
+    "hash": "bbf1e14dc1468685973297213a64820643debbd385b63dec68b93d0c7bf0f001"
+  },
+  "D:\\GitHub\\salarios-minimos\\build-output.txt": {
+    "size": 2518,
+    "mtime_ns": 1783374351754998800,
+    "word_count": 278,
+    "hash": "ffb05e9cd94a305536daf62e902110b11b1c04607ce90660ece1cfca83d0220b"
+  },
+  "D:\\GitHub\\salarios-minimos\\eslint.config.mjs": {
+    "size": 734,
+    "mtime_ns": 1783374351774963300,
+    "word_count": 59
+  },
+  "D:\\GitHub\\salarios-minimos\\jest.config.js": {
+    "size": 914,
+    "mtime_ns": 1783374351787926600,
+    "word_count": 98
+  },
+  "D:\\GitHub\\salarios-minimos\\jest.setup.js": {
+    "size": 96,
+    "mtime_ns": 1783374351800039200,
+    "word_count": 6
+  },
+  "D:\\GitHub\\salarios-minimos\\jsconfig.json": {
+    "size": 103,
+    "mtime_ns": 1783374351814048600,
+    "word_count": 12,
+    "hash": "c785090e7942db6d4e8ec9547623ef89e032de4f74de360f81c648249265f727"
+  },
+  "D:\\GitHub\\salarios-minimos\\next.config.ts": {
+    "size": 1121,
+    "mtime_ns": 1783539313808945200,
+    "word_count": 125
+  },
+  "D:\\GitHub\\salarios-minimos\\package.json": {
+    "size": 1974,
+    "mtime_ns": 1783524687193452800,
+    "word_count": 151,
+    "hash": "b94100af73403fa29c9b684e900934745231997e8c9c6e7d6a7b732dff4bbbe5"
+  },
+  "D:\\GitHub\\salarios-minimos\\postcss.config.mjs": {
+    "size": 101,
+    "mtime_ns": 1783374351871563400,
+    "word_count": 13
+  },
+  "D:\\GitHub\\salarios-minimos\\prettier.config.js": {
+    "size": 236,
+    "mtime_ns": 1783374351875559400,
+    "word_count": 26
+  },
+  "D:\\GitHub\\salarios-minimos\\prisma.config.ts": {
+    "size": 449,
+    "mtime_ns": 1783376967493085900,
+    "word_count": 50
+  },
+  "D:\\GitHub\\salarios-minimos\\prisma\\migrations\\20260218190610_migracion\\migration.sql": {
+    "size": 3472,
+    "mtime_ns": 1783374351927589600,
+    "word_count": 381,
+    "hash": "18be395f2fe679f7728fe42983badd86ed9f3a2b622c2ce0dafb1d199bed6357"
+  },
+  "D:\\GitHub\\salarios-minimos\\prisma\\migrations\\20260428175417_poc\\migration.sql": {
+    "size": 112,
+    "mtime_ns": 1783374351941581600,
+    "word_count": 16,
+    "hash": "23e4a2f887679d54dea339417d40bf178f2b1e83bbb8118e76e582a57c179462"
+  },
+  "D:\\GitHub\\salarios-minimos\\prisma\\migrations\\20260428180103_poc_2\\migration.sql": {
+    "size": 1333,
+    "mtime_ns": 1783374351945602700,
+    "word_count": 134,
+    "hash": "681b7ffa2a7299b5e737923f231d3829805a2804f2f2a4f19fd56a14f00cfdc3"
+  },
+  "D:\\GitHub\\salarios-minimos\\prisma\\migrations\\20260708173640_test08072026\\migration.sql": {
+    "size": 75,
+    "mtime_ns": 1783539313892529000,
+    "word_count": 9,
+    "hash": "5ddac939f6b8939343b6fa81fd4f974d81fdc32d9d2ab1f6f2772b3d9c7ae487"
+  },
+  "D:\\GitHub\\salarios-minimos\\public\\file.svg": {
+    "size": 391,
+    "mtime_ns": 1783374351965538000,
+    "word_count": 50,
+    "hash": "52163ecb5257da6ecb3ddf8967f0d51a0da93d79d48caa09e9d307ea1c1d3f17"
+  },
+  "D:\\GitHub\\salarios-minimos\\public\\globe.svg": {
+    "size": 1035,
+    "mtime_ns": 1783374351968534100,
+    "word_count": 154,
+    "hash": "8c99baedee05ada37bd392e179350c9a8e893c25c08cb2e1a8ec25f4f8a33868"
+  },
+  "D:\\GitHub\\salarios-minimos\\public\\next.svg": {
+    "size": 1375,
+    "mtime_ns": 1783374351982060500,
+    "word_count": 183,
+    "hash": "9caa34ac82b48d59fd2add4c0dbf6fcceaf3c3904254c3ccd89dd00644b375ad"
+  },
+  "D:\\GitHub\\salarios-minimos\\public\\vercel.svg": {
+    "size": 128,
+    "mtime_ns": 1783374351985052100,
+    "word_count": 12,
+    "hash": "dd579ec801cede14607350aa14a79bf784424d7144e1b63dbcbc4b9e32c12474"
+  },
+  "D:\\GitHub\\salarios-minimos\\public\\window.svg": {
+    "size": 385,
+    "mtime_ns": 1783374351998242000,
+    "word_count": 63,
+    "hash": "58d233ee9a0b0231d74f31667bfd20bc006b78d64d40f6521293bd71f06d435e"
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\@types\\global.d.ts": {
+    "size": 76,
+    "mtime_ns": 1783374352046408200,
+    "word_count": 12
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\auth\\[...nextauth]\\route.ts": {
+    "size": 207,
+    "mtime_ns": 1783374352088091400,
+    "word_count": 29
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\backup\\create\\route.ts": {
+    "size": 2314,
+    "mtime_ns": 1783374352137430100,
+    "word_count": 249
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\backup\\restore\\route.ts": {
+    "size": 2606,
+    "mtime_ns": 1783377495357647700,
+    "word_count": 301
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\consent\\route.ts": {
+    "size": 1891,
+    "mtime_ns": 1783524709566641500,
+    "word_count": 245
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\events\\route.ts": {
+    "size": 3154,
+    "mtime_ns": 1783524694344708600,
+    "word_count": 365
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\gdpr\\delete-account\\route.ts": {
+    "size": 2090,
+    "mtime_ns": 1783377464650988600,
+    "word_count": 252
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\gdpr\\delete-shadow\\route.ts": {
+    "size": 1673,
+    "mtime_ns": 1783524728191067900,
+    "word_count": 208
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\health\\route.ts": {
+    "size": 724,
+    "mtime_ns": 1783525123940588600,
+    "word_count": 99
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\items\\[id]\\route.ts": {
+    "size": 4851,
+    "mtime_ns": 1783374352300454800,
+    "word_count": 571
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\items\\route.ts": {
+    "size": 4228,
+    "mtime_ns": 1783377415460009900,
+    "word_count": 480
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\api\\shadow-profile\\route.ts": {
+    "size": 5013,
+    "mtime_ns": 1783524762846475900,
+    "word_count": 550
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\auth\\error\\page.tsx": {
+    "size": 3143,
+    "mtime_ns": 1783374352335500300,
+    "word_count": 280
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\auth\\signin\\page.tsx": {
+    "size": 3462,
+    "mtime_ns": 1783539313918551600,
+    "word_count": 319
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\error.tsx": {
+    "size": 1190,
+    "mtime_ns": 1783525096266276300,
+    "word_count": 149
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\layout.tsx": {
+    "size": 1000,
+    "mtime_ns": 1783374352345657100,
+    "word_count": 101
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\not-found.tsx": {
+    "size": 965,
+    "mtime_ns": 1783525584899302400,
+    "word_count": 109
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\onboarding\\page.tsx": {
+    "size": 4638,
+    "mtime_ns": 1783539313968788800,
+    "word_count": 406
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\page.tsx": {
+    "size": 16983,
+    "mtime_ns": 1783539314003786600,
+    "word_count": 1291
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\app\\providers.tsx": {
+    "size": 398,
+    "mtime_ns": 1783374352386245000,
+    "word_count": 40
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\components\\CreditMarketplace.tsx": {
+    "size": 8077,
+    "mtime_ns": 1783525029424840100,
+    "word_count": 704
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\components\\FinancialHealthSummary.tsx": {
+    "size": 4955,
+    "mtime_ns": 1783524996914097000,
+    "word_count": 452
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\components\\Header.tsx": {
+    "size": 1068,
+    "mtime_ns": 1783525046208570600,
+    "word_count": 91
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\components\\ItemForm.tsx": {
+    "size": 9486,
+    "mtime_ns": 1783539314028608700,
+    "word_count": 786
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\components\\MeditationTimer.tsx": {
+    "size": 3109,
+    "mtime_ns": 1783525072924861200,
+    "word_count": 364
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\components\\ThemeToggle.tsx": {
+    "size": 666,
+    "mtime_ns": 1783374352488994200,
+    "word_count": 68
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\auth.test.ts": {
+    "size": 1083,
+    "mtime_ns": 1783539314047192700,
+    "word_count": 83
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\env.test.ts": {
+    "size": 788,
+    "mtime_ns": 1783374352526480700,
+    "word_count": 66
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\geolocation.test.ts": {
+    "size": 3309,
+    "mtime_ns": 1783374352539735100,
+    "word_count": 294
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\retry.test.ts": {
+    "size": 998,
+    "mtime_ns": 1783374352552747200,
+    "word_count": 125
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\salary-calculator.test.ts": {
+    "size": 2700,
+    "mtime_ns": 1783374352565332600,
+    "word_count": 244
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\shadow-profile.test.ts": {
+    "size": 2400,
+    "mtime_ns": 1783374352578438200,
+    "word_count": 204
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\__tests__\\theme.test.tsx": {
+    "size": 1211,
+    "mtime_ns": 1783539314061222600,
+    "word_count": 79
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\api-handler.ts": {
+    "size": 738,
+    "mtime_ns": 1783377127835127400,
+    "word_count": 98
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\auth.ts": {
+    "size": 3472,
+    "mtime_ns": 1783539314088683900,
+    "word_count": 339
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\crypto.ts": {
+    "size": 2341,
+    "mtime_ns": 1783377009466166700,
+    "word_count": 265
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\env.ts": {
+    "size": 1555,
+    "mtime_ns": 1783374352631912100,
+    "word_count": 155
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\geolocation.ts": {
+    "size": 2256,
+    "mtime_ns": 1783378094265121800,
+    "word_count": 246
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\index.ts": {
+    "size": 248,
+    "mtime_ns": 1783374352647674600,
+    "word_count": 33
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\logger.ts": {
+    "size": 574,
+    "mtime_ns": 1783374352650634400,
+    "word_count": 75
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\prisma.ts": {
+    "size": 3206,
+    "mtime_ns": 1783525168992657200,
+    "word_count": 414
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\rate-limit.ts": {
+    "size": 2628,
+    "mtime_ns": 1783524673237331500,
+    "word_count": 351
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\retry.ts": {
+    "size": 679,
+    "mtime_ns": 1783374352678504500,
+    "word_count": 101
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\salary-calculator.ts": {
+    "size": 3117,
+    "mtime_ns": 1783374352691719000,
+    "word_count": 409
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\security-headers.ts": {
+    "size": 1052,
+    "mtime_ns": 1783539314101403300,
+    "word_count": 96
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\shadow-profile.ts": {
+    "size": 5382,
+    "mtime_ns": 1783374352704579400,
+    "word_count": 606
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\theme.tsx": {
+    "size": 3663,
+    "mtime_ns": 1783539314126126200,
+    "word_count": 404
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\lib\\validation.ts": {
+    "size": 5031,
+    "mtime_ns": 1783524267338059600,
+    "word_count": 473
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\services\\item.service.ts": {
+    "size": 1902,
+    "mtime_ns": 1783525183561202700,
+    "word_count": 239
+  },
+  "D:\\GitHub\\salarios-minimos\\src\\types\\geohash.d.ts": {
+    "size": 263,
+    "mtime_ns": 1783378089199633800,
+    "word_count": 28
+  },
+  "D:\\GitHub\\salarios-minimos\\tsconfig.json": {
+    "size": 716,
+    "mtime_ns": 1783526241610002800,
+    "word_count": 59,
+    "hash": "36ac63f8e0222bae9975ab6d0b586e4d1c32be87dc30e0829747dbc830d3fe8c"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": "security_doc",
+      "label": "Security Guide",
+      "file_type": "document",
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "security_privacy_by_design",
+      "label": "Privacy by Design Principles",
+      "file_type": "rationale",
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Six governing principles: privacy by design (minimize collection), least privilege, defense in depth (6 protection levels from input validation to audit logging), secure by default, user transparency/control, and auditability."
+    },
+    {
+      "id": "security_rate_limiting",
+      "label": "In-Memory Rate Limiting (src/lib/rate-limit.ts)",
+      "file_type": "concept",
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Fixed-window per-IP limiter applied to public endpoints (/api/events, /api/consent, /api/gdpr/delete-shadow, DELETE /api/shadow-profile), returning 429 with Retry-After. Known limitation: state is per-process, so serverless multi-instance deployments enforce per-instance limits; migrate the backend to Redis (e.g. Upstash) keeping the same interface if a global limit is needed."
+    },
+    {
+      "id": "security_session_per_handler",
+      "label": "Per-Handler Session Validation Pattern",
+      "file_type": "rationale",
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Deliberate pattern: there is no global middleware.ts \u2014 every protected route handler calls getServerSession() explicitly at the start. Rule for new routes: any route touching user data MUST include this check, and userId is ALWAYS derived from the server session, never from the request body."
+    },
+    {
+      "id": "security_consent_anti_forgery",
+      "label": "Consent Anti-Forgery Pattern",
+      "file_type": "concept",
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The consent endpoint never accepts userId from the request body: with an active session it is derived server-side from the session email; without one, consent is recorded as anonymous (userId: null) \u2014 because a forgeable consent record is legally worthless under GDPR/LFPDPPP."
+    },
+    {
+      "id": "security_encryption_at_rest",
+      "label": "Encryption at Rest (crypto.ts AES-256-GCM)",
+      "file_type": "concept",
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Backups are encrypted with AES-256-GCM via Node's native crypto (no external dependencies), SHA-256-derived key, random 12-byte IV and 16-byte auth tag \u2014 replacing the previously used unauthenticated AES-CBC so ciphertext tampering is detected."
+    }
+  ],
+  "edges": [
+    {
+      "source": "security_doc",
+      "target": "api_routes_doc",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_doc",
+      "target": "security_privacy_by_design",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_doc",
+      "target": "security_rate_limiting",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_doc",
+      "target": "security_session_per_handler",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_doc",
+      "target": "security_consent_anti_forgery",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_doc",
+      "target": "security_encryption_at_rest",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "gdpr_privacy_compliance_flow",
+      "label": "GDPR Privacy and Consent Compliance",
+      "nodes": [
+        "api_routes_gdpr_api",
+        "security_consent_anti_forgery",
+        "security_privacy_by_design",
+        "architecture_anonymized_events",
+        "security_resilience_accessibility_audit_s2_consent_forgery"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "SECURITY.md"
+    }
+  ]
+}

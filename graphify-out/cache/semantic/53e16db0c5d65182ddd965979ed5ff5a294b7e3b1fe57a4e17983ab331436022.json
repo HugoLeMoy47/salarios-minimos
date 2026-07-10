@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": "architecture_doc",
+      "label": "Architecture Documentation",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_layered_architecture",
+      "label": "Layered Architecture (Presentation / Local Client / API / Services / Persistence)",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Five layers: Next.js client with SessionProvider, an IndexedDB local-client layer (shadow profile), Next.js API routes, a business-logic services layer (salary calc, shadow profile, encryption), and persistence split between Prisma/SQL and Google Drive for encrypted backups."
+    },
+    {
+      "id": "architecture_shadow_profile",
+      "label": "Shadow Profile (Local-First IndexedDB Profile)",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Local-first design: all data lives in the browser (IndexedDB) so the app works with zero server and offline; a UUID identifies the anonymous profile, and on login items are merged into the user's DB record (ShadowProfile.mergedWithUserId/mergedAt)."
+    },
+    {
+      "id": "architecture_anonymized_events",
+      "label": "Anonymized Event Model (AnonymizedEvent)",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Privacy-preserving analytics: events store salary-days buckets instead of exact values, 6-character geohashes (~610km squares) instead of coordinates, and timestamps truncated to 15 minutes; userId, description and exact location are deliberately never sent."
+    },
+    {
+      "id": "architecture_data_model",
+      "label": "Prisma Data Model (User, Item, ShadowProfile, AnonymizedEvent)",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "User (OAuth identity + consent flags) has Items, an optional ShadowProfile, Backups and DeletionRequests; Item carries price, status (pending|purchased|not_purchased), postponedUntil and optional geolocation/geohash."
+    },
+    {
+      "id": "architecture_jwt_auth",
+      "label": "NextAuth JWT Stateless Authentication",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "OAuth via Google, Microsoft Azure AD and Apple with stateless JWT sessions stored in httpOnly cookies (30-day expiry) so no server-side session store is needed."
+    },
+    {
+      "id": "architecture_backup_encryption",
+      "label": "AES-256-GCM Backup Encryption",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Authenticated encryption via Node's native crypto module: key derived with SHA-256 from ENCRYPTION_KEY, random 12-byte IV, and a GCM auth tag concatenated as iv+tag+ciphertext in base64 \u2014 chosen over unauthenticated modes so tampering is detectable."
+    }
+  ],
+  "edges": [
+    {
+      "source": "architecture_doc",
+      "target": "architecture_layered_architecture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_doc",
+      "target": "architecture_shadow_profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_doc",
+      "target": "architecture_anonymized_events",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_doc",
+      "target": "architecture_data_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_doc",
+      "target": "architecture_jwt_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_doc",
+      "target": "architecture_backup_encryption",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_backup_encryption",
+      "target": "security_encryption_at_rest",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_shadow_profile",
+      "target": "architecture_anonymized_events",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

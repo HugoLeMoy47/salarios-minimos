@@ -1,0 +1,199 @@
+{
+  "nodes": [
+    {
+      "id": "security_resilience_accessibility_audit_doc",
+      "label": "Security, Resilience and Accessibility Audit",
+      "file_type": "document",
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Living July 2026 audit with 17 findings (S1-S8, R1-R5, A1-A4); 15 resolved and 2 deferred on 2026-07-08. Key insight: platform-layer features (theme, middleware, headers) were documented as complete but not re-verified as new screens were added, and the lead-selling business model amplifies the legal weight of security findings."
+    },
+    {
+      "id": "security_resilience_accessibility_audit_s2_consent_forgery",
+      "label": "Finding S2: Forgeable Consent userId",
+      "file_type": "concept",
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The public /api/consent endpoint recorded any client-supplied userId into ConsentLog, letting anyone forge consent for another user \u2014 critical because consent is the legal basis for sharing behavioral data with lenders. Resolved: userId derived from getServerSession() and removed from the Zod schema entirely."
+    },
+    {
+      "id": "security_resilience_accessibility_audit_s4_rate_limiting",
+      "label": "Finding S4: Zero Rate Limiting",
+      "file_type": "concept",
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "No API route had rate limits; public unauthenticated endpoints could flood AnonymizedEvent/ConsentLog or brute-force shadow deletion, and could also contaminate the analytics the credit marketplace depends on. Decision: option A (in-memory, no new dependencies) over Upstash Redis \u2014 implemented in src/lib/rate-limit.ts with documented per-instance limitation."
+    },
+    {
+      "id": "security_resilience_accessibility_audit_r2_merge_idempotency",
+      "label": "Finding R2: Shadow Merge Without Transaction or Idempotency",
+      "file_type": "concept",
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The product's most important flow (anonymous \u2192 authenticated migration) used Promise.all of individual prisma.item.create calls: a partial failure left orphaned writes with no rollback, and retries duplicated items. Resolved with prisma.$transaction plus idempotency via mergedAt/mergedWithUserId (retry does not duplicate; merging into another account returns 409)."
+    },
+    {
+      "id": "security_resilience_accessibility_audit_a1_dark_mode",
+      "label": "Finding A1: Dark Mode Broken by Hardcoded Hex Colors",
+      "file_type": "concept",
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The theme toggle changed the MUI palette but page.tsx, FinancialHealthSummary and CreditMarketplace hardcoded hex colors, so dark mode (an accessibility feature for photosensitivity/migraine) never activated where it mattered \u2014 even though the colors themselves passed WCAG AA contrast. Resolved: zero hardcoded hex outside theme.tsx, all components migrated to theme.palette tokens; rule established: never hardcode hex in content components."
+    },
+    {
+      "id": "security_resilience_accessibility_audit_s5_security_headers",
+      "label": "Finding S5: Missing HTTP Security Headers",
+      "file_type": "concept",
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "SECURITY.md claimed CSP/HSTS were implemented but no middleware.ts or next.config.ts headers existed \u2014 a doc/reality gap. Resolved via headers() in next.config.ts (CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy); CSP keeps 'unsafe-inline' for Next.js/MUI hydration, with nonce hardening as future work."
+    }
+  ],
+  "edges": [
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "security_doc",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "readme_doc",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "security_resilience_accessibility_audit_s2_consent_forgery",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "security_resilience_accessibility_audit_s4_rate_limiting",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "security_resilience_accessibility_audit_r2_merge_idempotency",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "security_resilience_accessibility_audit_a1_dark_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_doc",
+      "target": "security_resilience_accessibility_audit_s5_security_headers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_s2_consent_forgery",
+      "target": "security_consent_anti_forgery",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_s4_rate_limiting",
+      "target": "security_rate_limiting",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_s5_security_headers",
+      "target": "security_doc",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_r2_merge_idempotency",
+      "target": "api_routes_shadow_profile_merge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "security_resilience_accessibility_audit_s4_rate_limiting",
+      "target": "readme_credit_marketplace",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_RESILIENCE_ACCESSIBILITY_AUDIT.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

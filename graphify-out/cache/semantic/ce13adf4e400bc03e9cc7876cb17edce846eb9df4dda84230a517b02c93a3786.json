@@ -1,0 +1,219 @@
+{
+  "nodes": [
+    {
+      "id": "analysis_report_doc",
+      "label": "Analysis Report: Efficiency, Resilience and Optimization",
+      "file_type": "document",
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Feb 2026 audit identifying 12 improvement opportunities (3 critical, 5 high, 4 medium) with a prioritization matrix and 3-sprint roadmap estimated at 17-19 hours."
+    },
+    {
+      "id": "analysis_report_zod_validation",
+      "label": "Zod Input Validation Recommendation",
+      "file_type": "rationale",
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Zod was in package.json but unused; manual validation in API routes was error-prone and lacked sanitization, so centralizing input validation in Zod schemas was recommended as a P1 critical fix."
+    },
+    {
+      "id": "analysis_report_structured_logging",
+      "label": "Structured Logging Recommendation",
+      "file_type": "rationale",
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Raw console.warn/console.error calls in geolocation.ts, crypto.ts and API routes made production debugging and monitoring impossible; a level-based logger routing to monitoring services was proposed."
+    },
+    {
+      "id": "analysis_report_error_middleware",
+      "label": "Centralized Error Middleware Proposal (withErrorHandling)",
+      "file_type": "rationale",
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Each API route had its own try/catch producing inconsistent error responses with no centralized logging; a withErrorHandling wrapper mapping ZodError to 400 and everything else to a generic 500 was proposed."
+    },
+    {
+      "id": "analysis_report_api_caching",
+      "label": "API Cache Headers Recommendation",
+      "file_type": "rationale",
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "GET API routes queried the DB on every request with no Cache-Control headers; adding private max-age=60 caching was projected to cut response time ~90% and DB queries ~80%."
+    },
+    {
+      "id": "analysis_report_rate_limiting_proposal",
+      "label": "Rate Limiting Proposal (Upstash Redis)",
+      "file_type": "rationale",
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "No API route had any rate limit, exposing DDoS/DB-exhaustion risk; the report proposed @upstash/ratelimit with a Redis sliding window (100/hour per IP). The project later chose an in-memory implementation instead."
+    }
+  ],
+  "edges": [
+    {
+      "source": "analysis_report_doc",
+      "target": "performance_doc",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "testing_doc",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "contributing_doc",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "analysis_report_zod_validation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "analysis_report_structured_logging",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "analysis_report_error_middleware",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "analysis_report_api_caching",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_doc",
+      "target": "analysis_report_rate_limiting_proposal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_rate_limiting_proposal",
+      "target": "security_rate_limiting",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_rate_limiting_proposal",
+      "target": "security_resilience_accessibility_audit_s4_rate_limiting",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_error_middleware",
+      "target": "readme_withapihandler",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_structured_logging",
+      "target": "readme_pino_logging",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_api_caching",
+      "target": "performance_caching_strategies",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "analysis_report_zod_validation",
+      "target": "api_routes_items_api",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ANALYSIS_REPORT.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

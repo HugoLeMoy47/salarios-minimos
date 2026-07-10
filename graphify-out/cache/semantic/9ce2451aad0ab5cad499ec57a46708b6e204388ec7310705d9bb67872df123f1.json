@@ -1,0 +1,263 @@
+{
+  "nodes": [
+    {
+      "id": "readme_doc",
+      "label": "README: D\u00edas de Salario MVP",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_dias_de_salario",
+      "label": "D\u00edas de Salario Application",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Web app that reframes prices as days of minimum-wage work to discourage impulsive spending; local-first (IndexedDB), optional OAuth sync, encrypted backups, anonymized analytics, MUI/MS365-inspired accessible UI (WCAG AA+)."
+    },
+    {
+      "id": "readme_salary_days_calculation",
+      "label": "Salary Days Calculation",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Core metric: item price divided by NEXT_PUBLIC_MIN_SALARY_DAILY (241.56) rounded up with Math.ceil, because fractional work days cannot be sold."
+    },
+    {
+      "id": "readme_meditation_chamber",
+      "label": "Meditation Chamber (C\u00e1mara de Meditaci\u00f3n)",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Behavioral design: purchases exceeding 10% of monthly income automatically enter a 72-hour reflection period with a visual countdown; the user can cancel or wait, converting impulse purchases into deliberate decisions."
+    },
+    {
+      "id": "readme_financial_health_summary",
+      "label": "Financial Health Summary",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Real-time indicators of 'days of life' committed, under evaluation, and recovered, with nudges when over-committing income and positive reinforcement when cancelling impulsive purchases."
+    },
+    {
+      "id": "readme_credit_marketplace",
+      "label": "Smart Credit Marketplace",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Business model: financial-product offers with preferential rates gated by the user's self-control history; requesting information registers the user's 'Meditation Score' as a lead for lenders \u2014 better offers unlock as financial responsibility is demonstrated."
+    },
+    {
+      "id": "readme_retry_helper",
+      "label": "retry() Helper with Exponential Backoff",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Resilience utility used to retry Prisma/HTTP operations with exponential backoff; later centralized into the Prisma client proxy per audit finding R4."
+    },
+    {
+      "id": "readme_withapihandler",
+      "label": "withApiHandler Middleware",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Centralizes exception capture across API routes, returning a generic 500 and logging with pino \u2014 implements the error-middleware pattern proposed in the analysis report."
+    },
+    {
+      "id": "readme_pino_logging",
+      "label": "Pino Structured Logging",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Server-side structured logging chosen to replace ad-hoc console statements identified in the analysis report."
+    }
+  ],
+  "edges": [
+    {
+      "source": "readme_doc",
+      "target": "readme_dias_de_salario",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_dias_de_salario",
+      "target": "readme_salary_days_calculation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_dias_de_salario",
+      "target": "readme_meditation_chamber",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_dias_de_salario",
+      "target": "readme_financial_health_summary",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_dias_de_salario",
+      "target": "readme_credit_marketplace",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_doc",
+      "target": "readme_retry_helper",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_doc",
+      "target": "readme_withapihandler",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_doc",
+      "target": "readme_pino_logging",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_meditation_chamber",
+      "target": "readme_credit_marketplace",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_financial_health_summary",
+      "target": "readme_meditation_chamber",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_doc",
+      "target": "_github_workflows_ci_lint_and_test",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_retry_helper",
+      "target": "readme_withapihandler",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "backend_resilience_stack",
+      "label": "Backend Resilience Stack (retry, error handler, logging, transactions)",
+      "nodes": [
+        "readme_retry_helper",
+        "readme_withapihandler",
+        "readme_pino_logging",
+        "security_resilience_accessibility_audit_r2_merge_idempotency"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md"
+    },
+    {
+      "id": "behavioral_finance_feature_loop",
+      "label": "Behavioral Finance Feature Loop",
+      "nodes": [
+        "readme_salary_days_calculation",
+        "readme_meditation_chamber",
+        "readme_financial_health_summary",
+        "readme_credit_marketplace"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md"
+    }
+  ]
+}

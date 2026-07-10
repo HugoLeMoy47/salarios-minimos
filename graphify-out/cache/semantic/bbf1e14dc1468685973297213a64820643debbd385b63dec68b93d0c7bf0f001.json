@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "id": "testing_doc",
+      "label": "Testing Guide",
+      "file_type": "document",
+      "source_file": "TESTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "testing_pyramid",
+      "label": "Testing Pyramid Strategy",
+      "file_type": "concept",
+      "source_file": "TESTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "80% unit (Jest/ts-jest), 15% integration, 5% E2E (Playwright across chromium/firefox/webkit) with 60% coverage threshold enforced in jest.config.js and an 80% target; Arrange-Act-Assert and test independence as governing principles."
+    }
+  ],
+  "edges": [
+    {
+      "source": "testing_doc",
+      "target": "testing_pyramid",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "TESTING.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "testing_doc",
+      "target": "readme_salary_days_calculation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "TESTING.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

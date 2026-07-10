@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "id": "performance_doc",
+      "label": "Performance and Optimization Guide",
+      "file_type": "document",
+      "source_file": "PERFORMANCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "performance_core_web_vitals",
+      "label": "Core Web Vitals Targets",
+      "file_type": "concept",
+      "source_file": "PERFORMANCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "MVP targets: FCP <1.5s, LCP <2.5s, CLS <0.1, FID <100ms, TTI <3s, page size <200KB, TTFB <500ms, measured with Lighthouse/Lighthouse CI."
+    },
+    {
+      "id": "performance_caching_strategies",
+      "label": "Caching Strategies (Browser / Server / Redis)",
+      "file_type": "concept",
+      "source_file": "PERFORMANCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Three-tier strategy: Cache-Control headers on API responses, in-memory memoization middleware with 60s TTL, and Redis getOrCache with 300s TTL recommended for production."
+    }
+  ],
+  "edges": [
+    {
+      "source": "performance_doc",
+      "target": "performance_core_web_vitals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "PERFORMANCE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "performance_doc",
+      "target": "performance_caching_strategies",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "PERFORMANCE.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}
