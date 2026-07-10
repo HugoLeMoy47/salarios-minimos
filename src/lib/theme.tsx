@@ -42,6 +42,12 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem('theme-mode', mode);
     } catch {}
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', mode);
+      document.documentElement.style.colorScheme = mode;
+      document.documentElement.style.backgroundColor = mode === 'dark' ? '#121214' : '#f3f2f1';
+    }
   }, [mode]);
 
   const toggleMode = () => setMode((m: PaletteMode) => (m === 'light' ? 'dark' : 'light'));

@@ -31,6 +31,7 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
     notes: '',
     photoUrl: '',
   });
+  const [fieldError, setFieldError] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [salaryDays, setSalaryDays] = useState<number | null>(null);
@@ -54,7 +55,8 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const price = e.target.value;
-    setFormData({ ...formData, price });
+    setFormData((current) => ({ ...current, price }));
+    setFieldError('');
 
     if (price) {
       const days = calculateSalaryDays(parseFloat(price), userConfig.zone || 'general');
@@ -95,12 +97,16 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFieldError('');
+
+    if (!formData.description.trim() || !formData.price) {
+      setFieldError('Descripción y precio son requeridos');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      if (!formData.description || !formData.price) {
-        throw new Error('Descripción y precio son requeridos');
-      }
 
       // Obtener ubicación si está disponible
       let latitude, longitude, geohash;
@@ -153,7 +159,9 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
       setSalaryDays(null);
       setSendToMeditation(false);
     } catch (error) {
-      onError(error instanceof Error ? error.message : 'Error al crear item');
+      const message = error instanceof Error ? error.message : 'Error al crear item';
+      setFieldError(message);
+      onError(message);
     } finally {
       setIsLoading(false);
     }
@@ -167,9 +175,12 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
-          label="Descripción del artículo *"
+          label="Descripción del artículo"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) => {
+            setFormData((current) => ({ ...current, description: e.target.value }));
+            setFieldError('');
+          }}
           placeholder="Ej: Laptop, zapatillas, viaje a playa..."
           required
           fullWidth
@@ -177,7 +188,7 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
         />
 
         <TextField
-          label="Precio (MXN) *"
+          label="Precio (MXN)"
           type="number"
           inputProps={{ step: '0.01' }}
           value={formData.price}
@@ -210,7 +221,10 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
         <TextField
           label="Notas (opcional)"
           value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          onChange={(e) => {
+            setFormData((current) => ({ ...current, notes: e.target.value }));
+            setFieldError('');
+          }}
           placeholder="Ej: Necesito guardar para octubre..."
           fullWidth
           multiline
@@ -260,6 +274,12 @@ export function ItemForm({ onItemCreated, onError }: ItemFormProps) {
             <span aria-hidden="true">📍</span>
           </Button>
         </Box>
+
+        {fieldError && (
+          <Typography variant="body2" color="error.main">
+            {fieldError}
+          </Typography>
+        )}
 
         <Typography variant="caption" color="text.secondary">
           * Campos requeridos. Tu ubicación es opcional y será anonimizada.

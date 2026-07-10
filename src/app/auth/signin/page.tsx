@@ -1,5 +1,6 @@
 import { signIn } from 'next-auth/react';
 import { getProviders } from 'next-auth/react';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,13 +11,26 @@ interface ProviderType {
 
 export default async function SignInPage() {
   const providers: Record<string, ProviderType> | null = await getProviders();
+  const hasProviders = Boolean(providers && Object.keys(providers).length > 0);
+  const providerList = providers ? Object.values(providers) : [];
 
-  if (!providers) {
+  if (!hasProviders) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error</h1>
-          <p className="text-gray-600">No se pudieron cargar los proveedores de autenticación.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Modo sandbox local</h1>
+          <p className="text-gray-600 mb-4">
+            No hay proveedores OAuth configurados, así que el login social queda deshabilitado localmente.
+          </p>
+          <p className="text-sm text-gray-500 mb-6">
+            Puedes seguir usando la app de forma local y guardar tus datos en el navegador sin iniciar sesión.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-sm hover:shadow-md"
+          >
+            Volver al inicio
+          </Link>
         </div>
       </div>
     );
@@ -31,7 +45,7 @@ export default async function SignInPage() {
         </div>
 
         <div className="space-y-3">
-          {Object.values(providers).map((provider: ProviderType) => (
+          {providerList.map((provider: ProviderType) => (
             <div key={provider.name} className="mb-4">
               <SignInButton provider={provider.id} providerName={provider.name} />
             </div>

@@ -26,6 +26,7 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [items, setItems] = useState<LocalItem[]>([]);
   const [error, setError] = useState<string>('');
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [activeTab, setActiveTab] = useState<'pendientes' | 'meditando' | 'compradas' | 'no_compradas'>(
     'pendientes'
   );
@@ -35,12 +36,14 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const shadowItems = await getAllShadowItems();
+        setIsLoadingData(true);
+        const [shadowItems, config] = await Promise.all([getAllShadowItems(), getUserConfig()]);
         setItems(shadowItems);
-        const config = await getUserConfig();
         setUserConfig(config);
       } catch (err) {
         console.error('Error cargando datos:', err);
+      } finally {
+        setIsLoadingData(false);
       }
     };
 
@@ -48,7 +51,7 @@ export default function Home() {
   }, []);
 
   const handleItemCreated = async (newItem: LocalItem) => {
-    setItems([...items, newItem]);
+    setItems((currentItems) => [...currentItems, newItem]);
     setError('');
   };
 
@@ -108,9 +111,9 @@ export default function Home() {
         <Box
           sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3, gap: 2 }}
         >
-          {status === 'loading' && (
+          {status === 'loading' && !session && (
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Cargando...
+              Comprobando sesión...
             </Typography>
           )}
           {session ? (
@@ -220,7 +223,13 @@ export default function Home() {
             </Box>
 
             {/* Items List or Empty State */}
-            {filteredItems.length === 0 ? (
+            {isLoadingData ? (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  Cargando artículos...
+                </Typography>
+              </Box>
+            ) : filteredItems.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
                 <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 }}>
                   {activeTab === 'pendientes' && '¡Agrega un artículo para comenzar!'}

@@ -27,16 +27,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121214;
-    --surface: #1b1b1d;
-    --foreground: #f3f2f1;
-    --muted: #c8c6c4;
-    --input-border: #2b2a2b;
-    --input-bg: #151516;
-    --focus-outline: #2b88d8;
-  }
+:root[data-theme='dark'] {
+  --background: #121214;
+  --surface: #1b1b1d;
+  --foreground: #f3f2f1;
+  --muted: #c8c6c4;
+  --input-border: #2b2a2b;
+  --input-bg: #151516;
+  --focus-outline: #2b88d8;
 }
 
 body {

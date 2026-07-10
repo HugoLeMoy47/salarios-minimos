@@ -25,6 +25,7 @@ export default function OnboardingPage() {
   const [monthlyIncome, setMonthlyIncome] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
 
   useEffect(() => {
     // Cargar configuración existente si hay
@@ -44,6 +45,7 @@ export default function OnboardingPage() {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       const income = parseFloat(monthlyIncome);
@@ -52,7 +54,8 @@ export default function OnboardingPage() {
       }
 
       await updateUserConfig({ zone, monthlyIncome: income });
-      router.push('/');
+      setSuccess('Configuración guardada correctamente');
+      setTimeout(() => router.push('/'), 400);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error guardando configuración');
     } finally {
@@ -114,6 +117,12 @@ export default function OnboardingPage() {
           {error && (
             <Alert severity="error" sx={{ mb: 3 }}>
               {error}
+            </Alert>
+          )}
+
+          {success && (
+            <Alert severity="success" sx={{ mb: 3 }}>
+              {success}
             </Alert>
           )}
 

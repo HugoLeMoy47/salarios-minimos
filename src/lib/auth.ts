@@ -3,11 +3,77 @@
  */
 
 import { NextAuthOptions, Session } from 'next-auth';
+import type { Provider } from 'next-auth/providers/index';
 import GoogleProvider from 'next-auth/providers/google';
 import AzureADProvider from 'next-auth/providers/azure-ad';
 import AppleProvider from 'next-auth/providers/apple';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from './prisma';
+
+export type AuthEnv = Record<string, string | undefined>;
+
+function hasValue(value?: string): boolean {
+  return Boolean(value && value.trim().length > 0);
+}
+
+export function hasConfiguredAuthProviders(env: AuthEnv = process.env): boolean {
+  return [
+    env.GOOGLE_CLIENT_ID,
+    env.GOOGLE_CLIENT_SECRET,
+    env.MICROSOFT_CLIENT_ID,
+    env.MICROSOFT_CLIENT_SECRET,
+    env.APPLE_ID,
+    env.APPLE_TEAM_ID,
+    env.APPLE_KEY_ID,
+    env.APPLE_PRIVATE_KEY,
+  ].some(hasValue);
+}
+
+export function getConfiguredAuthProviders(env: AuthEnv = process.env) {
+  const providers: Provider[] = [];
+
+  if (hasValue(env.GOOGLE_CLIENT_ID) && hasValue(env.GOOGLE_CLIENT_SECRET)) {
+    providers.push(
+      GoogleProvider({
+        clientId: env.GOOGLE_CLIENT_ID || '',
+        clientSecret: env.GOOGLE_CLIENT_SECRET || '',
+        allowDangerousEmailAccountLinking: true,
+      })
+    );
+  }
+
+  if (hasValue(env.MICROSOFT_CLIENT_ID) && hasValue(env.MICROSOFT_CLIENT_SECRET)) {
+    providers.push(
+      AzureADProvider({
+        clientId: env.MICROSOFT_CLIENT_ID || '',
+        clientSecret: env.MICROSOFT_CLIENT_SECRET || '',
+        tenantId: 'common',
+        allowDangerousEmailAccountLinking: true,
+      })
+    );
+  }
+
+  if (
+    hasValue(env.APPLE_ID) &&
+    hasValue(env.APPLE_TEAM_ID) &&
+    hasValue(env.APPLE_KEY_ID) &&
+    hasValue(env.APPLE_PRIVATE_KEY)
+  ) {
+    providers.push(
+      AppleProvider({
+        clientId: env.APPLE_ID || '',
+        clientSecret: {
+          teamId: env.APPLE_TEAM_ID || '',
+          keyId: env.APPLE_KEY_ID || '',
+          key: env.APPLE_PRIVATE_KEY || '',
+        } as unknown as string,
+        allowDangerousEmailAccountLinking: true,
+      })
+    );
+  }
+
+  return providers;
+}
 
 declare module 'next-auth' {
   interface Session {
@@ -23,38 +89,9 @@ declare module 'next-auth' {
 interface JWTToken {
   sub?: string;
 }
-
-
-// Validar requeridos env vars en build time
-
-function getOptionalEnv(key: string): string | undefined {
-  return process.env[key];
-}
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  providers: [
-    GoogleProvider({
-      clientId: getOptionalEnv('GOOGLE_CLIENT_ID') || '',
-      clientSecret: getOptionalEnv('GOOGLE_CLIENT_SECRET') || '',
-      allowDangerousEmailAccountLinking: true,
-    }),
-    AzureADProvider({
-      clientId: getOptionalEnv('MICROSOFT_CLIENT_ID') || '',
-      clientSecret: getOptionalEnv('MICROSOFT_CLIENT_SECRET') || '',
-      tenantId: 'common',
-      allowDangerousEmailAccountLinking: true,
-    }),
-    AppleProvider({
-      clientId: getOptionalEnv('APPLE_ID') || '',
-      clientSecret: {
-        teamId: getOptionalEnv('APPLE_TEAM_ID') || '',
-        keyId: getOptionalEnv('APPLE_KEY_ID') || '',
-        key: getOptionalEnv('APPLE_PRIVATE_KEY') || '',
-      } as unknown as string,
-      allowDangerousEmailAccountLinking: true,
-    }),
-  ],
+  providers: getConfiguredAuthProviders(),
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 días
